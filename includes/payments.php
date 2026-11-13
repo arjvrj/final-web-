@@ -63,7 +63,7 @@ function rg_payment_config(array $settings): array
  *
  * Reasons are stable codes the UI can map to friendly text:
  *   payments_disabled | mode_invalid | key_missing | key_mode_mismatch |
- *   secret_missing | live_not_confirmed
+ *   secret_missing
  */
 function rg_payment_status(array $cfg): array
 {
@@ -87,9 +87,12 @@ function rg_payment_status(array $cfg): array
     if ($cfg['key_secret'] === '') {
         return ['enabled' => false, 'mode' => $mode, 'reason' => 'secret_missing'];
     }
-    if ($mode === 'live' && $cfg['live_confirm'] !== RG_LIVE_CONFIRM) {
-        return ['enabled' => false, 'mode' => 'live', 'reason' => 'live_not_confirmed'];
-    }
+
+    /* Live mode is authorised when it is saved: owner_settings.php refuses to
+       store `live` unless the operator types the confirmation phrase. The
+       phrase itself is deliberately never stored, so it must not be required
+       again here — doing that made every live install look unconfirmed and
+       hid the Pay button. */
     return ['enabled' => true, 'mode' => $mode, 'reason' => null];
 }
 

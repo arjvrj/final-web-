@@ -142,7 +142,7 @@ Mode rules, as implemented in `includes/payments.php`:
 
 - `disabled` → no Pay button anywhere, no checkout script loaded, `/pay_*` returns 404-ish JSON, the webhook rejects everything.
 - `test` → keys must start `rzp_test_`; the checkout script is served locally and only on pages that need it.
-- `live` → keys must start `rzp_live_` **and** `razorpay_live_confirm` must be set. A key prefix that does not match the mode makes the whole payment surface inert instead of half-working.
+- `live` → keys must start `rzp_live_`. Switching to live requires typing `I_AUTHORIZE_REAL_CHARGES` in the owner panel; the phrase is checked when the mode is saved and is never stored. A key prefix that does not match the mode makes the whole payment surface inert instead of half-working.
 
 ### Platform WhatsApp
 
