@@ -652,6 +652,20 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['repair'])) {
 
 function fx_h($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
 function fx_size($p) { return file_exists($p) ? filesize($p) . ' bytes' : 'MISSING'; }
+
+$securityHtml = '';
+try {
+    require_once __DIR__ . '/includes/security.php';
+    if (function_exists('rg_start_session')) {
+        rg_start_session();
+        $securityHtml = '<p class="ok">includes/security.php loaded and the session started.</p>';
+    } else {
+        $securityHtml = '<p class="bad">security.php loaded but rg_start_session() is missing.</p>';
+    }
+} catch (Throwable $e) {
+    $securityHtml = '<p class="bad">' . fx_h(get_class($e) . ': ' . $e->getMessage()) . '</p>'
+        . '<p class="bad">in ' . fx_h($e->getFile() . ':' . $e->getLine()) . '</p>';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -706,21 +720,7 @@ td:first-child{white-space:nowrap;color:#5F6175;width:42%}code{background:#F1EBF
 </table>
 
 <h2>Security file load test</h2>
-<?php
-try {
-    require_once __DIR__ . '/includes/security.php';
-    if (function_exists('rg_start_session')) {
-        rg_start_session();
-        echo '<p class="ok">includes/security.php loaded and the session started.</p>';
-    } else {
-        echo '<p class="bad">security.php loaded but rg_start_session() is missing.</p>';
-    }
-} catch (Throwable $e) {
-    echo '<p class="bad">' . fx_h(get_class($e) . ': ' . $e->getMessage()) . '</p>';
-    echo '<p class="bad">in ' . fx_h($e->getFile() . ':' . $e->getLine()) . '</p>';
-}
-?>
-
+<?= $securityHtml ?>
 <h2>Config / database</h2>
 <?php
 $cfgFile = __DIR__ . '/config.php';
