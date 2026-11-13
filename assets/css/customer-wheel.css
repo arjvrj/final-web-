@@ -1,0 +1,373 @@
+/* ReviewGrow — Spin the Wheel on the customer page.
+ *
+ * Loads last, after customer.css, customer-premium.css and customer-refresh.css.
+ * Additive, hand-written, no CDN: the wheel is an inline SVG built on the server
+ * (includes/wheel.php → rg_wheel_svg) and rotated here with one CSS transform.
+ *
+ * Palette: deep violet #5425E8 / #4820D8, soft lavender #F0E9FF, warm cream
+ * #FBF8F2, navy #151832, gold #FFB51B.
+ */
+
+#review-app .rg-wheel-section {
+    margin: 26px 0 8px;
+    padding: 24px 18px 20px;
+    border: 1px solid #ece5d8;
+    border-radius: 22px;
+    background:
+        radial-gradient(120% 90% at 50% -10%, #f3ecff 0%, rgba(243, 236, 255, 0) 60%),
+        #fbf8f2;
+    box-shadow: 0 14px 36px rgba(60, 40, 110, .08);
+    text-align: center;
+    overflow: hidden;
+}
+
+.rg-wheel-head { margin: 0 0 12px; }
+
+.rg-wheel-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 6px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: #f0e9ff;
+    color: #4820d8;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.rg-wheel-head h2 {
+    margin: 4px 0 6px;
+    font-size: 24px;
+    line-height: 1.15;
+    letter-spacing: -.03em;
+    color: #151832;
+}
+
+.rg-wheel-sub {
+    margin: 0 auto;
+    max-width: 30ch;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: #6b6683;
+}
+
+/* ---------- the stage: fixed pointer, rotating disc ---------- */
+
+.rg-wheel-stage {
+    position: relative;
+    width: min(320px, 78vw);
+    margin: 18px auto 6px;
+    aspect-ratio: 1 / 1;
+}
+
+.rg-wheel-disc {
+    position: absolute;
+    inset: 0;
+    filter: drop-shadow(0 12px 24px rgba(72, 32, 216, .25));
+    will-change: transform;
+}
+
+.rg-wheel-svg { width: 100%; height: 100%; display: block; }
+
+.rg-wheel-pointer {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    z-index: 3;
+    width: 0;
+    height: 0;
+    transform: translateX(-50%);
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 22px solid #ffb51b;
+    filter: drop-shadow(0 3px 5px rgba(120, 70, 0, .35));
+}
+
+.rg-wheel-pointer::after {
+    content: "";
+    position: absolute;
+    top: -26px;
+    left: -6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+}
+
+/* locked: still visible, clearly not playable yet */
+.is-locked .rg-wheel-disc { filter: grayscale(.55) opacity(.55); }
+.is-locked .rg-wheel-pointer { opacity: .5; }
+
+/* ---------- the spin button ---------- */
+
+#review-app .rg-wheel-spin {
+    margin-top: 14px;
+    background: linear-gradient(135deg, #5425e8 0%, #7c5cf0 55%, #4820d8 100%);
+    box-shadow: 0 12px 26px rgba(84, 37, 232, .32);
+}
+
+#review-app .rg-wheel-spin:disabled {
+    background: #ece7f9;
+    border: 1.5px solid #e2daf7;
+    color: #7a70a8;
+    box-shadow: none;
+}
+
+/* ---------- result ---------- */
+
+.rg-wheel-result {
+    margin: 16px 0 0;
+    padding: 18px 16px;
+    border: 1px solid #e7dffb;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 10px 26px rgba(60, 40, 110, .08);
+    animation: rg-rise .3s cubic-bezier(.22, .8, .28, 1) both;
+}
+
+.rg-result-mark { font-size: 30px; line-height: 1; margin-bottom: 6px; }
+
+.rg-wheel-result h3 {
+    margin: 2px 0 6px;
+    font-size: 20px;
+    letter-spacing: -.02em;
+    color: #151832;
+}
+
+.rg-result-lead {
+    margin: 0 0 12px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #55506e;
+}
+
+.rg-coupon {
+    display: grid;
+    gap: 4px;
+    justify-items: center;
+    padding: 14px 12px;
+    border: 1.5px dashed #c9b8f7;
+    border-radius: 14px;
+    background: #faf7ff;
+}
+
+.rg-coupon-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #7a6ba8;
+}
+
+.rg-coupon code {
+    font-family: "DM Sans", ui-monospace, Menlo, monospace;
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    color: #4820d8;
+}
+
+.rg-coupon-copy {
+    margin-top: 4px;
+    min-height: 34px;
+    padding: 0 14px;
+    border: 1.5px solid #d8cbf8;
+    border-radius: 10px;
+    background: #fff;
+    color: #4820d8;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.rg-coupon-copy:hover { background: #f2ecff; }
+
+.rg-coupon-meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin: 14px 0 0;
+}
+
+.rg-coupon-meta div {
+    padding: 9px 8px;
+    border-radius: 11px;
+    background: #f7f5fc;
+    text-align: center;
+}
+
+.rg-coupon-meta dt {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: #8b84a3;
+}
+
+.rg-coupon-meta dd {
+    margin: 3px 0 0;
+    font-size: 12px;
+    font-weight: 800;
+    color: #201a3d;
+    overflow-wrap: anywhere;
+}
+
+.rg-result-note {
+    margin: 12px 0 0;
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: #6b6683;
+}
+
+/* ---------- terms ---------- */
+
+.rg-wheel-terms {
+    margin: 16px 0 0;
+    text-align: left;
+    border-top: 1px solid #eee7dc;
+    padding-top: 12px;
+}
+
+.rg-wheel-terms summary {
+    cursor: pointer;
+    font-size: 11.5px;
+    font-weight: 800;
+    color: #4820d8;
+    list-style: none;
+}
+
+.rg-wheel-terms summary::-webkit-details-marker { display: none; }
+.rg-wheel-terms summary::after { content: " ⌄"; }
+.rg-wheel-terms[open] summary::after { content: " ⌃"; }
+
+.rg-wheel-terms p {
+    margin: 8px 0 0;
+    font-size: 11px;
+    line-height: 1.6;
+    color: #6f6a82;
+}
+
+/* ---------- phones ---------- */
+
+@media (max-width: 430px) {
+    #review-app .rg-wheel-section { padding: 20px 14px 16px; border-radius: 20px; }
+    .rg-wheel-head h2 { font-size: 21px; }
+    .rg-coupon code { font-size: 19px; }
+    .rg-coupon-meta { grid-template-columns: 1fr 1fr; }
+    .rg-coupon-meta div:last-child { grid-column: 1 / -1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rg-wheel-result { animation: none; }
+}
+
+/* ---------- one-spin journey ---------- */
+
+/* The locked wheel offers the one action that unlocks it. */
+#review-app .rg-wheel-unlock {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 14px auto 2px;
+    min-height: 44px;
+    padding: 0 20px;
+    border: 1.5px solid #d8cbf8;
+    border-radius: 999px;
+    background: #fff;
+    color: #4820d8;
+    font-size: 12.5px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+#review-app .rg-wheel-unlock:hover {
+    background: #f6f1ff;
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px -16px rgba(72, 32, 216, .8);
+}
+
+#review-app .rg-wheel-section.is-ready .rg-wheel-disc { cursor: pointer; }
+
+@media (prefers-reduced-motion: reduce) {
+    #review-app .rg-wheel-unlock:hover { transform: none; }
+}
+
+/* The disc needs an explicit origin; without it a rotated wheel can drift. */
+.rg-wheel-disc {
+    transform-origin: 50% 50%;
+    transform: rotate(0deg);
+}
+
+.rg-wheel-section.is-locked .rg-wheel-spin { display: none; }
+
+.rg-wheel-locked {
+    margin: 14px 0 0;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #645a99;
+}
+
+.rg-wheel-done {
+    margin: 16px 0 0;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #6529ed;
+}
+
+/* "Get one more free spin" card that ends the first spin */
+.rg-again {
+    text-align: center;
+    animation: rgAgainIn .45s ease both;
+}
+
+@keyframes rgAgainIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.rg-again-title {
+    margin: 6px 0 6px;
+    font-size: 24px;
+    line-height: 1.2;
+    letter-spacing: -.6px;
+    color: #17164f;
+}
+
+.rg-again-text {
+    margin: 0 0 16px;
+    font-size: 14.5px;
+    color: #645a99;
+}
+
+#review-app .rg-wheel-again-btn {
+    width: 100%;
+    min-height: 50px;
+    margin-top: 4px;
+    background: linear-gradient(135deg, #6529ed 0%, #9b5cff 100%);
+    box-shadow: 0 14px 30px -12px rgba(101, 41, 237, .6);
+    color: #fff;
+    font-weight: 800;
+    font-size: 15px;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+#review-app .rg-wheel-again-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 34px -12px rgba(101, 41, 237, .7);
+}
+
+#review-app .rg-wheel-again-btn:disabled { opacity: .55; cursor: not-allowed; }
+
+@media (prefers-reduced-motion: reduce) {
+    .rg-again { animation: none; }
+    .rg-wheel-disc { transition-duration: .01ms !important; }
+}

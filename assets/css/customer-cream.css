@@ -1,0 +1,443 @@
+/* customer-cream.css — the customer page, finished in the cream palette.
+ *
+ * Loaded last on review.php only. It changes colour, spacing and rounding to
+ * match the approved design: warm cream page, one white rounded card, navy
+ * headings, gold stars, lavender pills, a violet gradient button.
+ *
+ * It does not add or remove anything: the QR slug, the five stars, the topic
+ * chips, the 600-character box, the language picker, the AI draft, the private
+ * feedback form, the Google link and the wheel are all untouched. Dashboard
+ * pages never load this file, so their look is unchanged.
+ */
+
+:root {
+  --rgc-primary: #5425E8;
+  --rgc-deep:    #4820D8;
+  --rgc-navy:    #151832;
+  --rgc-cream:   #FBF8F2;
+  --rgc-lavender:#F0E9FF;
+  --rgc-gold:    #FFB51B;
+  --rgc-line:    #EAE3F8;
+  --rgc-muted:   #6B6784;
+}
+
+/* ---------- page ---------- */
+
+body {
+  background-color: var(--rgc-cream);
+  background-image:
+    radial-gradient(760px 520px at 108% -6%, rgba(84, 37, 232, .16), rgba(84, 37, 232, 0) 62%),
+    radial-gradient(680px 520px at -12% 104%, rgba(132, 92, 255, .18), rgba(132, 92, 255, 0) 60%),
+    radial-gradient(420px 320px at 50% 46%, rgba(255, 255, 255, .85), rgba(255, 255, 255, 0) 70%);
+  background-attachment: fixed;
+}
+
+.customer-shell {
+  background: #FFFFFF;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, .9);
+  box-shadow:
+    0 30px 70px -28px rgba(60, 30, 150, .30),
+    0 2px 10px rgba(60, 30, 150, .06);
+  overflow: hidden;
+}
+
+@media (min-width: 620px) {
+  .customer-shell { margin: 28px auto; }
+}
+
+/* ---------- top bar ---------- */
+
+.customer-bar {
+  border-bottom: 1px solid #F3EFFB;
+  background: transparent;
+}
+.bar-brand strong { color: var(--rgc-navy); font-weight: 800; letter-spacing: -.01em; }
+.back, .bar-globe { color: var(--rgc-navy); }
+
+/* ---------- business block ---------- */
+
+.brand-box {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding-top: 6px;
+}
+.brand-box h1 {
+  color: var(--rgc-navy);
+  font-weight: 800;
+  letter-spacing: -.02em;
+}
+.brand-box > p { color: var(--rgc-muted); }
+
+.logo-disc {
+  background: linear-gradient(150deg, #8C6BFF 0%, var(--rgc-primary) 55%, var(--rgc-deep) 100%);
+  box-shadow: 0 12px 26px -10px rgba(84, 37, 232, .60);
+  border: 3px solid #FFFFFF;
+}
+.logo-disc .rg-monogram { color: #FFFFFF; }
+
+/* the business name reads as the pill in the design */
+.brand-box h1 {
+  display: inline-block;
+  background: var(--rgc-lavender);
+  color: var(--rgc-navy);
+  border-radius: 999px;
+  padding: 6px 20px;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+/* ---------- social row ---------- */
+
+.rg-social-btn {
+  background: #FFFFFF;
+  border: 1px solid var(--rgc-line);
+  border-radius: 16px;
+  box-shadow: 0 2px 6px rgba(60, 30, 150, .05);
+}
+.rg-social-btn:hover { border-color: #D6C8FA; background: #FCFAFF; }
+.rg-social-label { color: var(--rgc-muted); }
+.rg-social-icon { color: var(--rgc-primary); }
+
+/* ---------- progress ---------- */
+
+.rg-progress li {
+  background: #F7F4FE;
+  border: 1px solid var(--rgc-line);
+  color: var(--rgc-muted);
+  border-radius: 999px;
+}
+.rg-progress li b { color: var(--rgc-primary); }
+.rg-progress li.is-current {
+  background: var(--rgc-lavender);
+  border-color: #DDD0FF;
+  color: var(--rgc-navy);
+}
+.rg-progress li.is-current b {
+  background: var(--rgc-primary);
+  color: #FFFFFF;
+}
+
+/* ---------- headings and stars ----------
+   (the empty-star colour is set with the other star rules further down) */
+
+.intro h2,
+.rg-step h3 {
+  color: var(--rgc-navy);
+  font-weight: 800;
+  letter-spacing: -.025em;
+}
+.intro > p, .rating-note { color: var(--rgc-muted); }
+
+.star { color: #DAD3EC; }
+.star.is-on, .star[aria-checked="true"] { color: var(--rgc-gold); }
+
+/* ---------- step badge ---------- */
+
+.rg-step-badge {
+  background: var(--rgc-primary);
+  color: #FFFFFF;
+  border: 0;
+  box-shadow: 0 6px 14px -6px rgba(84, 37, 232, .55);
+}
+.rg-step h3 span { color: var(--rgc-muted); font-weight: 500; }
+
+/* ---------- chips ----------
+   Scoped to #review-app so it wins over the earlier layers without !important. */
+
+#review-app .chip {
+  background: var(--rgc-lavender);
+  border: 1px solid #E4D9FF;
+  color: #45209E;
+  border-radius: 999px;
+  font-weight: 600;
+}
+#review-app .chip:hover { background: #E9DEFF; border-color: #D6C5FF; }
+#review-app .chip.is-selected,
+#review-app .chip.selected,
+#review-app .chip[aria-pressed="true"] {
+  background: var(--rgc-primary);
+  border-color: var(--rgc-primary);
+  color: #FFFFFF;
+  box-shadow: 0 8px 18px -10px rgba(84, 37, 232, .75);
+}
+.rg-pick-count { background: var(--rgc-lavender); color: #45209E; border-radius: 999px; }
+
+/* ---------- fields ---------- */
+
+.field > label { color: var(--rgc-navy); font-weight: 700; }
+.optional-tag { color: var(--rgc-muted); }
+
+.input-wrap {
+  background: #FDFBF7;
+  border: 1px solid var(--rgc-line);
+  border-radius: 18px;
+}
+.input-wrap textarea,
+.input-wrap input { background: transparent; color: var(--rgc-navy); }
+.input-wrap textarea::placeholder,
+.input-wrap input::placeholder { color: #A29CBB; }
+.input-wrap:focus-within { border-color: #C9B6FF; box-shadow: 0 0 0 4px rgba(84, 37, 232, .10); }
+.input-wrap small { color: #A29CBB; }
+
+select,
+.language-row select {
+  background: #FFFFFF;
+  border: 1px solid var(--rgc-line);
+  border-radius: 14px;
+  color: var(--rgc-navy);
+}
+.language-row > label { color: var(--rgc-navy); font-weight: 700; }
+
+.rg-hint { color: var(--rgc-muted); }
+
+/* ---------- the one button ---------- */
+
+.main-button {
+  background-image: linear-gradient(135deg, #7A5CFF 0%, var(--rgc-primary) 52%, var(--rgc-deep) 100%);
+  background-color: var(--rgc-primary);
+  color: #FFFFFF;
+  border: 0;
+  border-radius: 999px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  box-shadow: 0 14px 30px -14px rgba(84, 37, 232, .85);
+}
+.main-button:hover:not(:disabled) { filter: brightness(1.05); }
+.main-button:disabled {
+  background-image: none;
+  background-color: #F1EDFB;
+  color: #9C95B8;
+  box-shadow: none;
+}
+
+/* ---------- links and notes ---------- */
+
+.rg-link,
+#privateFeedbackLink,
+.rg-google-direct a,
+a.rg-private-link {
+  color: var(--rgc-primary);
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
+
+.rg-note,
+.rg-privacy,
+.privacy-note {
+  background: #FFFFFF;
+  border: 1px solid var(--rgc-line);
+  border-radius: 16px;
+  color: var(--rgc-navy);
+}
+.rg-note p, .rg-privacy p, .privacy-note p { color: var(--rgc-muted); }
+
+/* ---------- dark mode is not part of this design ---------- */
+@media (prefers-color-scheme: dark) {
+  body { background-color: var(--rgc-cream); }
+  .customer-shell { background: #FFFFFF; }
+}
+
+/* The round logo sits above the name pill, as in the design; earlier layers
+   pull the two together, so both get an explicit place here. */
+.brand-box .logo-disc {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  z-index: 1;
+  margin: 0 auto 12px;
+}
+.brand-box h1 { position: relative; z-index: 2; margin: 0 auto; }
+
+/* The private-feedback escape hatch reads as the underlined link in the design,
+   not as a second big button competing with the main one. */
+#review-app .rg-private-toggle {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  padding: 12px 4px 2px;
+  color: var(--rgc-primary);
+  font-weight: 700;
+  font-size: 13.5px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1.5px;
+}
+#review-app .rg-private-toggle:hover { color: var(--rgc-deep); }
+#review-app .rg-cta-hint { color: var(--rgc-muted); }
+
+/* ---------- decorative sparkles, as in the approved design ----------
+   Pure CSS: one inline SVG used as a repeating background. It sits behind the
+   card, ignores the mouse, and is not read out by screen readers. */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'><g fill='%237C5CF0'><path d='M40 30c1.6 6.4 3.4 8.2 9.8 9.8-6.4 1.6-8.2 3.4-9.8 9.8-1.6-6.4-3.4-8.2-9.8-9.8 6.4-1.6 8.2-3.4 9.8-9.8z' opacity='.55'/><path d='M168 92c1.1 4.4 2.3 5.6 6.7 6.7-4.4 1.1-5.6 2.3-6.7 6.7-1.1-4.4-2.3-5.6-6.7-6.7 4.4-1.1 5.6-2.3 6.7-6.7z' opacity='.42'/><path d='M96 168c1.3 5.2 2.7 6.6 7.9 7.9-5.2 1.3-6.6 2.7-7.9 7.9-1.3-5.2-2.7-6.6-7.9-7.9 5.2-1.3 6.6-2.7 7.9-7.9z' opacity='.38'/></g></svg>");
+  background-repeat: repeat;
+  background-size: 240px 240px;
+}
+.customer-shell { position: relative; z-index: 1; }
+
+/* ---------- round logo: gradient badge with a soft halo ---------- */
+
+.brand-box .logo-disc {
+  box-shadow:
+    0 0 0 10px rgba(240, 233, 255, .85),
+    0 0 0 22px rgba(240, 233, 255, .45),
+    0 16px 30px -12px rgba(84, 37, 232, .55);
+  border: 3px solid #FFFFFF;
+}
+.brand-box .logo-disc img { border-radius: 50%; object-fit: cover; }
+
+/* ---------- the business name pill is wide, as in the design ---------- */
+
+.brand-box h1 {
+  min-width: 62%;
+  padding: 9px 26px;
+  font-size: 16.5px;
+  border-radius: 999px;
+}
+
+/* ---------- step 2 heading on one line: "What stood out? (pick up to 3)" ---------- */
+
+#review-app .rg-step-head h3 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 15.5px;
+}
+#review-app .rg-step-head h3 span {
+  font-weight: 500;
+  color: var(--rgc-muted);
+  font-size: 13.5px;
+}
+#review-app .rg-step-head { align-items: center; gap: 10px; }
+#review-app .rg-pick-count {
+  margin-left: auto;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 4px 11px;
+}
+
+/* ---------- chips breathe a little more, like the design ---------- */
+
+#review-app .chips { gap: 9px; }
+#review-app .chip {
+  padding: 9px 16px;
+  font-size: 13.5px;
+  border-radius: 999px;
+}
+
+/* ---------- the one box at the bottom: shield, reason, privacy ---------- */
+
+.rg-info-box {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  text-align: left;
+  background: #FFFFFF;
+  border: 1px solid var(--rgc-line);
+  border-radius: 18px;
+  padding: 16px 18px;
+  margin: 18px 0 10px;
+  box-shadow: 0 2px 8px rgba(60, 30, 150, .05);
+}
+.rg-info-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--rgc-lavender);
+  color: var(--rgc-primary);
+}
+.rg-info-copy p { margin: 0; }
+.rg-info-copy .direct.unavailable {
+  display: block;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--rgc-navy);
+  font-weight: 600;
+}
+.rg-info-copy .privacy {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #F1EDFA;
+  font-size: 12px;
+  color: var(--rgc-muted);
+  text-align: left;
+}
+
+/* ---------- the main button carries the design's sparkle ---------- */
+
+#review-app .main-button::before {
+  content: "✦";
+  margin-right: 8px;
+  font-size: 13px;
+  opacity: .9;
+}
+#review-app .main-button:disabled::before { opacity: .45; }
+
+/* ---------- sparkles on the card itself, faint, never clickable ---------- */
+
+.customer-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: .55;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260' viewBox='0 0 260 260'><g fill='%238B6BF5'><path d='M52 34c1.5 6 3.2 7.7 9.2 9.2-6 1.5-7.7 3.2-9.2 9.2-1.5-6-3.2-7.7-9.2-9.2 6-1.5 7.7-3.2 9.2-9.2z' opacity='.5'/><path d='M212 128c1 4 2.1 5.1 6.1 6.1-4 1-5.1 2.1-6.1 6.1-1-4-2.1-5.1-6.1-6.1 4-1 5.1-2.1 6.1-6.1z' opacity='.38'/><path d='M104 214c1.2 4.8 2.5 6.1 7.3 7.3-4.8 1.2-6.1 2.5-7.3 7.3-1.2-4.8-2.5-6.1-7.3-7.3 4.8-1.2 6.1-2.5 7.3-7.3z' opacity='.34'/></g></svg>");
+  background-repeat: repeat;
+  background-size: 260px 260px;
+}
+.customer-shell > * { position: relative; z-index: 1; }
+
+/* Empty stars need to be seen, not guessed: a clear lavender-grey outline. */
+#review-app .star { color: #B7AECE; font-size: 41px; padding: 4px; }
+#review-app .stars { gap: 4px; }
+#review-app .star[aria-checked="true"],
+#review-app .star.active { color: var(--rgc-gold); }
+
+/* The language picker carries a small globe, as in the design. */
+#review-app .language-row select {
+  padding-left: 34px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235425E8' stroke-width='1.8' stroke-linecap='round'><circle cx='12' cy='12' r='9'/><path d='M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: 12px center;
+}
+
+/* The Google notice inside the info card is plain text, not a second warning
+   card — the earlier layers style `.direct.unavailable` as one, so undo it here. */
+#review-app .rg-info-box .direct.unavailable {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  text-align: left;
+  font-size: 13.5px;
+  line-height: 1.55;
+  font-weight: 600;
+  color: var(--rgc-navy);
+}
+#review-app .rg-info-box .direct.unavailable::before { content: none; }
+#review-app .rg-info-box .privacy {
+  text-align: left;
+  max-width: none;
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--rgc-muted);
+}

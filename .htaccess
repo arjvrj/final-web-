@@ -1,0 +1,63 @@
+# ReviewGrow — Apache configuration for Hostinger (public_html)
+#
+# Two jobs:
+#   1. Clean URLs, so /login/ reaches login.php — the old .php URLs keep working.
+#   2. Deny direct browser access to files that must never be downloadable:
+#      includes, docs, tools, tests, SQL and markdown.
+#
+# NOTE: this file cannot be executed in the development sandbox (no Apache).
+# It is verified by rule inspection here and must be confirmed on Hostinger with
+# the checks listed in docs/STAGE-2-PUBLIC.md before going live.
+
+Options -Indexes
+DirectoryIndex index.php index.html
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # If the app lives in a subfolder, set it here (e.g. RewriteBase /app/).
+    # RewriteBase /
+
+    # ---- existing files and folders always win -------------------------------
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # ---- clean URLs ----------------------------------------------------------
+    RewriteRule ^login/?$              login.php            [L,QSA]
+    RewriteRule ^register/?$           signup.php           [L,QSA]
+    RewriteRule ^signup/?$             signup.php           [L,QSA]
+    RewriteRule ^onboarding/?$         onboard.php          [L,QSA]
+    RewriteRule ^onboard/?$            onboard.php          [L,QSA]
+    RewriteRule ^logout/?$             logout.php           [L,QSA]
+    RewriteRule ^dashboard/?$          dashboard.php        [L,QSA]
+    RewriteRule ^razorpay/webhook/?$   payment_webhook.php    [L]
+
+    # Customer review page: /r/<slug>/  →  review.php?slug=<slug>
+    # This is the URL printed on QR codes.
+    RewriteRule ^r/([a-zA-Z0-9_-]+)/?$ review.php?slug=$1    [L,QSA]
+</IfModule>
+
+# ---- never serve these ------------------------------------------------------
+<FilesMatch "\.(sql|md|log|ini|bak|zip|sh)$">
+    Require all denied
+</FilesMatch>
+
+# Internal folders: reachable by PHP, never by a browser.
+RedirectMatch 404 ^/(includes|docs|tools|tests|sql|preview|frontend|backups)(/|$)
+
+# config.php holds database credentials. The example is a template, but keeping
+# both out of the browser costs nothing.
+<FilesMatch "^config(\.example)?\.php$">
+    Require all denied
+</FilesMatch>
+
+# ---- basic hardening --------------------------------------------------------
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# UTF-8 everywhere, so ₹, ★ and Indic text behave.
+AddDefaultCharset UTF-8

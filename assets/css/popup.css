@@ -1,0 +1,324 @@
+/* ============================================================================
+   popup.css — the public promotion popup
+   ----------------------------------------------------------------------------
+   Loaded by the marketing pages only (home, log in, sign up). Everything is
+   scoped to .rg-pop, so nothing here can reach the dashboards, the owner panel
+   or the customer review page — none of those pages load this file at all.
+
+   Brand: cream #FBF8F2 · purple #4B20DC · navy #141623 · lime #E7F3B7
+          off-white #FFFDFB · lavender #F1EBFE
+   ========================================================================== */
+
+.rg-pop {
+  --rgp-cream: #FBF8F2;
+  --rgp-purple: #4B20DC;
+  --rgp-purple-2: #7B4BF5;
+  --rgp-navy: #141623;
+  --rgp-ink-soft: #5F6175;
+  --rgp-lime: #E7F3B7;
+  --rgp-card: #FFFDFB;
+  --rgp-lavender: #F1EBFE;
+  --rgp-border: #E7DEFB;
+  --rgp-gold: #E9B44C;
+
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  font-family: inherit;
+  color: var(--rgp-navy);
+}
+
+/* `hidden` must beat the grid above, or the popup would cover the page. */
+.rg-pop[hidden] { display: none; }
+
+.rg-pop-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 22, 35, .55);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: rgPopFade .25s ease both;
+}
+
+.rg-pop-card {
+  position: relative;
+  /* A column flex box so the announcement layout can put the artwork *below* the
+     text with `order`, while every other layout keeps the artwork on top. */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 420px;
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  background: var(--rgp-card);
+  border: 1px solid var(--rgp-border);
+  border-radius: 24px;
+  box-shadow: 0 40px 90px -30px rgba(20, 22, 35, .65);
+  animation: rgPopIn .38s cubic-bezier(.2, .9, .3, 1.05) both;
+  overscroll-behavior: contain;
+}
+
+@keyframes rgPopFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rgPopIn {
+  from { opacity: 0; transform: translateY(18px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---------- close ---------- */
+.rg-pop-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 253, 251, .92);
+  color: var(--rgp-navy);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 6px 16px -8px rgba(20, 22, 35, .5);
+  transition: background .2s ease, transform .2s ease;
+}
+.rg-pop-close:hover { background: #fff; transform: scale(1.05); }
+.rg-pop-close:focus-visible { outline: 3px solid var(--rgp-purple); outline-offset: 2px; }
+
+/* ---------- artwork ----------
+   `contain`, never `cover`: the owner's artwork is shown whole. The frame picks
+   up the cream background so a portrait image does not look boxed in. */
+.rg-pop-media {
+  flex: 0 0 auto;
+  margin: 0;
+  background: linear-gradient(160deg, var(--rgp-lavender) 0%, var(--rgp-cream) 100%);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 23px 23px 0 0;
+}
+.rg-pop-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(52vh, 420px);
+  object-fit: contain;
+}
+
+/* The stored file can disappear after the page was rendered. The script hides
+   the broken <img> and reveals this branded block instead — the offer text,
+   coupon and button stay exactly as configured. */
+.rg-pop-media-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 210px;
+  padding: 28px 20px;
+  background:
+    radial-gradient(70% 80% at 20% 0%, rgba(255, 255, 255, .75), transparent 60%),
+    linear-gradient(155deg, #F6F0FF 0%, #FBF8F2 62%, #EEF6D6 100%);
+  text-align: center;
+}
+.rg-pop-media-fallback[hidden] { display: none; }
+.rg-pop-media-mark {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
+  background: linear-gradient(135deg, var(--rgp-purple) 0%, var(--rgp-purple-2) 100%);
+  color: #fff;
+  font-size: 22px;
+  line-height: 1;
+  box-shadow: 0 14px 26px -16px rgba(75, 32, 220, .9);
+}
+.rg-pop-media-brand {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  color: var(--rgp-navy);
+}
+.rg-pop-media-note {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .03em;
+  color: var(--rgp-ink-soft);
+}
+.rg-pop-image-missing .rg-pop-media { min-height: 210px; }
+
+/* ---------- body ---------- */
+.rg-pop-body {
+  flex: 1 1 auto;
+  padding: 18px 22px 22px;
+  text-align: center;
+}
+
+.rg-pop-heading {
+  margin: 0 0 8px;
+  font-size: 21px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  font-weight: 800;
+  color: var(--rgp-navy);
+}
+
+.rg-pop-text {
+  margin: 0 0 4px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--rgp-ink-soft);
+}
+
+/* ---------- coupon ---------- */
+.rg-pop-coupon {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--rgp-lavender);
+  border: 1px dashed #C9B8F7;
+  text-align: left;
+}
+.rg-pop-coupon-label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--rgp-purple);
+  margin-bottom: 6px;
+}
+.rg-pop-coupon-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.rg-pop-coupon code {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--rgp-navy);
+  background: transparent;
+  word-break: break-all;
+}
+.rg-pop-copy {
+  flex: 0 0 auto;
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--rgp-purple);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 14px -10px rgba(75, 32, 220, .9);
+  transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+.rg-pop-copy:hover { transform: translateY(-1px); }
+.rg-pop-copy.is-copied { background: var(--rgp-purple); color: #fff; }
+.rg-pop-copy:focus-visible { outline: 3px solid var(--rgp-navy); outline-offset: 2px; }
+
+.rg-pop-copied {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #2E7D4F;
+}
+.rg-pop-copied[hidden] { display: none; }
+
+/* ---------- call to action ---------- */
+.rg-pop-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 14px 26px;
+  width: 100%;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--rgp-purple) 0%, var(--rgp-purple-2) 100%);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 18px 34px -18px rgba(75, 32, 220, .95);
+  transition: transform .25s cubic-bezier(.2, .8, .3, 1), box-shadow .25s ease, filter .25s ease;
+}
+.rg-pop-cta:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  text-decoration: none;
+  color: #fff;
+}
+.rg-pop-cta:focus-visible { outline: 3px solid var(--rgp-navy); outline-offset: 3px; }
+
+/* ---------- layouts ---------- */
+
+/* image only: the artwork is the whole popup */
+.rg-pop-card--image { max-width: 440px; }
+.rg-pop-card--image .rg-pop-media { border-radius: 23px; }
+
+/* image + CTA: no text block, just the button under the artwork */
+.rg-pop-card--image_cta .rg-pop-body { padding-top: 14px; }
+
+/* announcement: text first, artwork after */
+.rg-pop-card--announcement .rg-pop-body { padding-top: 24px; }
+.rg-pop-card--announcement .rg-pop-media { order: 2; border-radius: 0 0 23px 23px; }
+.rg-pop-card--announcement .rg-pop-media img { max-height: min(38vh, 300px); }
+.rg-pop-card--announcement .rg-pop-coupon { margin-top: 16px; }
+.rg-pop-card--announcement::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 5px;
+  border-radius: 24px 24px 0 0;
+  background: linear-gradient(90deg, var(--rgp-purple) 0%, var(--rgp-lime) 100%);
+  z-index: 1;
+}
+
+/* ---------- phone: a sheet, not a floating card ---------- */
+@media (max-width: 560px) {
+  .rg-pop { padding: 0; align-items: end; }
+  .rg-pop-card {
+    max-width: 100%;
+    max-height: 92vh;
+    border-radius: 22px 22px 0 0;
+    border-bottom: 0;
+    animation: rgPopSheet .4s cubic-bezier(.2, .9, .3, 1) both;
+  }
+  .rg-pop-media { border-radius: 21px 21px 0 0; }
+  .rg-pop-media img { max-height: 46vh; }
+  .rg-pop-body { padding: 16px 18px calc(20px + env(safe-area-inset-bottom, 0px)); }
+  .rg-pop-heading { font-size: 19px; }
+  .rg-pop-cta { padding: 15px 20px; }
+  .rg-pop-card--announcement .rg-pop-media { border-radius: 0; }
+}
+
+@keyframes rgPopSheet {
+  from { transform: translateY(28px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .rg-pop-backdrop,
+  .rg-pop-card,
+  .rg-pop-cta,
+  .rg-pop-close { animation: none !important; transition: none !important; }
+  .rg-pop-cta:hover { transform: none; }
+}
+
+body.rg-pop-open { overflow: hidden; }
