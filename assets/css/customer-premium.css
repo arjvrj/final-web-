@@ -1,0 +1,289 @@
+/* ReviewGrow — premium layer for the customer review page.
+ *
+ * HAND-WRITTEN and strictly ADDITIVE. It loads after customer.css, which is
+ * generated verbatim from the design sources by tools/build-assets.mjs and must
+ * never be edited by hand.
+ *
+ * Rule for this file: never restyle a component the design already owns
+ * (.stars, .star, .rating-note, .chip, .main-button, .outline-button, .field,
+ * .input-wrap, .language-row, .direct, .privacy …). Those keep the exact
+ * design values. This file only covers what the upgrade ADDS to the page:
+ *
+ *   - the row of social destinations above the stars
+ *   - the numbered step wrappers around the existing sections
+ *   - the loading skeleton, the error panel and the private-feedback link
+ *   - the two design blocks that the old generated stylesheet never carried
+ *     (.ai-badge and .review-card), copied verbatim from review-smart.css
+ *
+ * No CDNs, no @import, no external fonts — the page already loads fonts.css.
+ */
+
+#review-app {
+    --rg-violet: #4d23df;
+    --rg-violet-soft: #efe9ff;
+    --rg-violet-line: #d3c6fb;
+    --rg-ink: #10152f;
+    --rg-muted: #7b7a88;
+    --rg-line: #eceaf2;
+    --rg-soft: #f7f6fa;
+    --rg-radius: 16px;
+    --rg-ease: cubic-bezier(.22, .8, .28, 1);
+}
+
+/* ==========================================================================
+   1. Destinations — Instagram / Facebook / Website / WhatsApp / Google
+   ========================================================================== */
+
+.rg-social {
+    /* One flat row: five buttons must fit a 390px phone without a lonely
+       second row, and a single button must not stretch across the card. */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 18px 0 0;
+}
+
+.rg-social-btn {
+    flex: 1 1 54px;
+    max-width: 118px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 11px 6px 9px;
+    border: 1px solid var(--rg-line);
+    border-radius: 14px;
+    background: #fff;
+    color: var(--rg-ink);
+    text-decoration: none;
+    transition: border-color .16s var(--rg-ease), box-shadow .16s var(--rg-ease),
+                transform .16s var(--rg-ease);
+}
+
+.rg-social-icon {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--rg-soft);
+    color: var(--rg-violet);
+    font-size: 15px;
+    transition: background .16s var(--rg-ease), color .16s var(--rg-ease);
+}
+
+.rg-social-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .01em;
+    color: #55536b;
+    text-align: center;
+    line-height: 1.2;
+}
+
+@media (hover: hover) {
+    .rg-social-btn:hover {
+        border-color: var(--rg-violet-line);
+        box-shadow: 0 8px 20px rgba(38, 28, 66, .10);
+        transform: translateY(-1px);
+    }
+    .rg-social-btn.is-instagram:hover .rg-social-icon { background: #fdeaf3; color: #d6249f; }
+    .rg-social-btn.is-facebook:hover  .rg-social-icon { background: #e8effd; color: #1877f2; }
+    .rg-social-btn.is-website:hover   .rg-social-icon { background: #e8f6ec; color: #1f7a3d; }
+    .rg-social-btn.is-whatsapp:hover  .rg-social-icon { background: #e4f8ea; color: #128c4a; }
+    .rg-social-btn.is-google:hover    .rg-social-icon { background: #fdecec; color: #d93025; }
+}
+
+.rg-social-btn:focus-visible {
+    outline: 3px solid #9879fa;
+    outline-offset: 2px;
+}
+
+.rg-social + .intro { margin-top: 18px; }
+
+/* ==========================================================================
+   2. Steps — the same sections, numbered, with a short rise on entry
+   ========================================================================== */
+
+.rg-step {
+    animation: rg-rise .32s var(--rg-ease) both;
+}
+
+@keyframes rg-rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: none; }
+}
+
+.rg-step-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin: 0 0 4px;
+}
+
+.rg-step-badge {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    margin-top: -1px;
+    border-radius: 50%;
+    background: var(--rg-violet-soft);
+    color: var(--rg-violet);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.rg-req {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--rg-violet);
+    background: var(--rg-violet-soft);
+    border-radius: 6px;
+    padding: 2px 6px;
+    margin-left: 6px;
+}
+
+/* the character counter keeps the design's small style, plus a green state */
+.input-wrap small.is-good { color: #1f7a3d; }
+
+/* a selected star only pops; the colour is the design's */
+.star.active { animation: rg-star-pop .28s var(--rg-ease) both; }
+
+@keyframes rg-star-pop {
+    0%   { transform: scale(.88); }
+    55%  { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+/* ==========================================================================
+   3. Blocks the generated stylesheet never carried — values copied from
+      review-smart.css, no reinterpretation
+   ========================================================================== */
+
+.ai-badge { display: inline-block; margin: 4px 0 10px; padding: 6px 12px; border-radius: 999px; background: #efe9ff; color: #4d23df; font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase }
+.own-badge { display: inline-block; margin: 4px 0 10px; padding: 6px 12px; border-radius: 999px; background: #e8f6ec; color: #1f7a3d; font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase }
+.review-cards { display: flex; flex-direction: column; gap: 12px; margin: 14px 0 }
+.review-card { display: block; border: 1.5px solid #e7e2ef; border-radius: 16px; padding: 12px; background: #fff; cursor: pointer }
+.review-card.selected { border-color: #7c3aed; box-shadow: 0 0 0 3px #7c3aed22 }
+.card-pick { display: flex; align-items: center; gap: 8px; margin-bottom: 8px }
+.card-title { font-size: 12px; font-weight: 800; color: #2a2440 }
+.card-count { margin-left: auto; font-size: 10px; color: #777182 }
+.review-card textarea { width: 100%; min-height: 96px; border: 1px solid #eee9f5; border-radius: 12px; padding: 10px; font: inherit; font-size: 13px; line-height: 1.6; resize: vertical; background: #fcfbfe; color: #10152f }
+.review-card textarea:focus-visible { outline: 3px solid #9879fa; outline-offset: 2px }
+
+/* ==========================================================================
+   4. Loading — three skeleton cards instead of a lonely spinner
+   ========================================================================== */
+
+.rg-skeleton-wrap { text-align: center; }
+
+.rg-skeleton {
+    border: 1px solid #e7e2ef;
+    border-radius: 16px;
+    padding: 14px;
+    margin: 0 0 10px;
+    background: #fff;
+}
+
+.rg-skeleton-line {
+    height: 9px;
+    border-radius: 6px;
+    margin: 0 0 8px;
+    background: linear-gradient(90deg, #f1eef7 25%, #faf8fd 37%, #f1eef7 63%);
+    background-size: 400% 100%;
+    animation: rg-shimmer 1.25s ease-in-out infinite;
+}
+
+.rg-skeleton-line:nth-child(2) { width: 92%; animation-delay: .06s; }
+.rg-skeleton-line:nth-child(3) { width: 68%; animation-delay: .12s; }
+.rg-skeleton-line:last-child { margin-bottom: 0; }
+
+@keyframes rg-shimmer {
+    0%   { background-position: 100% 0; }
+    100% { background-position: 0 0; }
+}
+
+/* ==========================================================================
+   5. Error panel — the AI failed, the page still works
+   ========================================================================== */
+
+.rg-error {
+    border: 1px solid #f3d6d3;
+    background: #fdf4f3;
+    border-radius: 16px;
+    padding: 20px 18px;
+    margin: 18px 0 0;
+    text-align: center;
+    animation: rg-rise .28s var(--rg-ease) both;
+}
+
+.rg-error h2 {
+    font-size: 17px;
+    margin: 0 0 6px;
+    letter-spacing: -.02em;
+}
+
+.rg-error p {
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: #6b5150;
+    margin: 0 0 14px;
+}
+
+/* ==========================================================================
+   6. Private feedback — always reachable, never pushed
+   ========================================================================== */
+
+.rg-private-toggle {
+    display: inline-block;
+    margin: 2px auto 16px;
+    background: none;
+    border: 0;
+    padding: 6px 2px;
+    color: var(--rg-violet);
+    font-size: 11.5px;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.rg-private-toggle:hover { color: #3a17b5; }
+
+.rg-private-toggle:focus-visible {
+    outline: 3px solid #9879fa;
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+
+.hidden { display: none !important; }
+
+/* ==========================================================================
+   7. Small screens
+   ========================================================================== */
+
+@media (max-width: 400px) {
+    .rg-social { gap: 6px; }
+    .rg-social-btn { padding: 9px 3px 8px; border-radius: 12px; }
+    .rg-social-icon { width: 30px; height: 30px; font-size: 13px; }
+    .rg-social-label { font-size: 9px; letter-spacing: 0; }
+}
+
+/* ==========================================================================
+   8. Reduced motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .rg-step,
+    .rg-error,
+    .star.active { animation: none !important; }
+    .rg-skeleton-line { animation: none !important; background: #f3f0f8; }
+    .rg-social-btn,
+    .rg-social-icon { transition: none !important; }
+    .rg-social-btn:hover { transform: none !important; }
+}

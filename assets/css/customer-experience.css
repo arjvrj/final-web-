@@ -1,0 +1,1203 @@
+/* =====================================================================
+   ReviewAI — customer feedback experience (final visual layer)
+   ---------------------------------------------------------------------
+   Loaded last on review.php, after customer.css, customer-premium.css,
+   customer-refresh.css, customer-wheel.css, customer-cream.css and
+   customer-reference.css. It only paints: every id, step, endpoint and
+   backend field stays exactly as it was.
+
+   Palette (locked):
+     Warm Cream      #FBF8F2
+     Electric Purple #4B20DC
+     Deep Navy       #141623
+     Soft Lime       #E7F3B7
+     Off White       #FFFDFB
+     Lavender        #F1EBFE
+     Gold accent     #E9B44C
+   ===================================================================== */
+
+:root {
+    --rx-cream: #FBF8F2;
+    --rx-purple: #4B20DC;
+    --rx-purple-deep: #3A16A8;
+    --rx-violet: #7B4BF5;
+    --rx-navy: #141623;
+    --rx-lime: #E7F3B7;
+    --rx-card: #FFFDFB;
+    --rx-lavender: #F1EBFE;
+    --rx-border: #E9E0F8;
+    --rx-soft: #5F6175;
+    --rx-gold: #E9B44C;
+}
+
+/* ---------------------------------------------------------------------
+   Page canvas + floating sparkles
+   --------------------------------------------------------------------- */
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--rx-cream);
+    background-image:
+        radial-gradient(620px 480px at 50% -14%, rgba(75, 32, 220, .10), transparent 70%),
+        radial-gradient(430px 390px at -10% 44%, rgba(123, 75, 245, .07), transparent 72%),
+        radial-gradient(440px 400px at 110% 80%, rgba(231, 243, 183, .34), transparent 70%);
+}
+
+#review-app {
+    position: relative;
+    min-height: 100vh;
+    padding: 30px 16px 52px;
+    overflow-x: clip;
+    isolation: isolate;
+}
+
+.rg-page-sparkles {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    contain: layout paint;
+}
+
+.rg-spark {
+    position: absolute;
+    display: block;
+    line-height: 1;
+    color: var(--rx-purple);
+    opacity: .20;
+    font-size: 15px;
+    animation: rxSparkFloat 13s ease-in-out infinite;
+    will-change: transform;
+}
+
+.rg-spark.s1 { top: 12%; left: 6%;  font-size: 17px; animation-delay: -1s; }
+.rg-spark.s2 { top: 23%; right: 7%; font-size: 12px; color: #98B84A; opacity: .42; animation-delay: -5s; }
+.rg-spark.s3 { top: 58%; left: 8%;  font-size: 11px; color: #98B84A; opacity: .38; animation-delay: -8s; }
+.rg-spark.s4 { top: 72%; right: 6%; font-size: 18px; animation-delay: -3s; }
+.rg-spark.s5 { top: 87%; left: 14%; font-size: 13px; animation-delay: -10s; }
+.rg-spark.s6 { top: 5%;  left: 48%; font-size: 10px; color: #98B84A; opacity: .34; animation-delay: -6s; }
+
+@keyframes rxSparkFloat {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+    33%      { transform: translate3d(6px, -14px, 0) rotate(18deg) scale(1.08); }
+    66%      { transform: translate3d(-5px, -6px, 0) rotate(-12deg) scale(.94); }
+}
+
+/* ---------------------------------------------------------------------
+   The feedback card
+   --------------------------------------------------------------------- */
+
+#review-app .customer-shell {
+    position: relative;
+    z-index: 2;
+    width: min(100%, 452px);
+    max-width: 452px;
+    margin: 0 auto;
+    padding: 18px 24px 30px;
+    border: 1px solid var(--rx-border);
+    border-radius: 34px;
+    background: var(--rx-card);
+    box-shadow:
+        0 42px 96px -48px rgba(20, 22, 35, .42),
+        0 16px 40px -30px rgba(75, 32, 220, .34),
+        inset 0 1px 0 rgba(255, 255, 255, .9);
+    animation: rxCardIn .55s cubic-bezier(.22, .9, .28, 1) both;
+}
+
+@keyframes rxCardIn {
+    from { opacity: 0; transform: translateY(14px) scale(.99); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* The old dotted texture competes with the sparkle layer: keep the card calm. */
+#review-app .customer-shell::after { opacity: .22; }
+
+/* ---------------------------------------------------------------------
+   Header
+   --------------------------------------------------------------------- */
+
+#review-app .customer-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 44px;
+    border-bottom: 0;
+    background: transparent;
+}
+
+#review-app .customer-bar .back {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--rx-border);
+    background: #FFFFFF;
+    color: var(--rx-navy);
+    font-size: 18px;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 8px 20px -16px rgba(20, 22, 35, .8);
+    transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+
+#review-app .customer-bar .back:hover {
+    transform: translateY(-1px);
+    background: var(--rx-lavender);
+    border-color: #DCCBFA;
+}
+
+#review-app .bar-brand {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 7px;
+    padding-left: 3px;
+    color: var(--rx-navy);
+    font-size: 15.5px;
+    font-weight: 800;
+    letter-spacing: -.015em;
+}
+
+#review-app .bar-brand .bar-spark {
+    color: var(--rx-purple);
+    font-size: 15px;
+    filter: drop-shadow(0 3px 7px rgba(75, 32, 220, .28));
+}
+
+#review-app .bar-brand strong { color: var(--rx-navy); font-size: 15.5px; font-weight: 800; }
+
+#review-app .bar-actions { display: flex; align-items: center; gap: 8px; }
+
+#review-app .bar-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--rx-border);
+    background: #FFFFFF;
+    color: var(--rx-purple);
+    display: grid;
+    place-items: center;
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+#review-app .bar-icon:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px -16px rgba(75, 32, 220, .9);
+}
+
+#review-app .bar-share {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 38px;
+    padding: 0 15px;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--rx-purple), var(--rx-violet));
+    color: #FFFFFF;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    box-shadow: 0 14px 26px -18px rgba(75, 32, 220, .95);
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+#review-app .bar-share:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 18px 30px -18px rgba(75, 32, 220, 1);
+}
+
+/* ---------------------------------------------------------------------
+   Business profile — logo, name, note (loaded from the QR business)
+   --------------------------------------------------------------------- */
+
+#review-app .brand-box {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    margin-top: 24px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    text-align: center;
+}
+
+#review-app .rg-halo {
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    width: 152px;
+    height: 152px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(241, 235, 254, .98), rgba(241, 235, 254, 0) 70%);
+    pointer-events: none;
+}
+
+#review-app .rg-arc {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    width: 202px;
+    height: 104px;
+    transform: translateX(-50%);
+    border-radius: 202px 202px 0 0;
+    border: 1px solid rgba(75, 32, 220, .12);
+    border-bottom: 0;
+    pointer-events: none;
+}
+
+#review-app .rg-profile-eyebrow {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0 0 12px;
+    padding: 6px 12px;
+    border: 1px solid #E5D9F9;
+    border-radius: 999px;
+    background: rgba(255, 253, 251, .9);
+    color: var(--rx-purple);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .10em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+#review-app .rg-profile-eyebrow span { font-size: 11px; }
+
+#review-app .brand-box .logo-disc {
+    position: relative;
+    z-index: 1;
+    width: 88px;
+    height: 88px;
+    margin: 0 auto 14px;
+    top: auto;
+    left: auto;
+    transform: none;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border: 3px solid #FFFFFF;
+    border-radius: 50%;
+    background: linear-gradient(150deg, #A98CFF 0%, var(--rx-purple) 55%, var(--rx-purple-deep) 100%);
+    color: #FFFFFF;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    box-shadow:
+        0 0 0 1px var(--rx-border),
+        0 0 0 10px rgba(241, 235, 254, .85),
+        0 0 0 20px rgba(241, 235, 254, .34),
+        0 20px 36px -18px rgba(75, 32, 220, .62);
+    animation:
+        rxLogoIn .72s cubic-bezier(.2, .85, .25, 1) both,
+        rxLogoGlow 7s ease-in-out 1s infinite;
+}
+
+@keyframes rxLogoIn {
+    from { opacity: 0; transform: translateY(12px) scale(.82); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes rxLogoGlow {
+    0%, 100% {
+        box-shadow:
+            0 0 0 1px var(--rx-border),
+            0 0 0 10px rgba(241, 235, 254, .85),
+            0 0 0 20px rgba(241, 235, 254, .34),
+            0 20px 36px -18px rgba(75, 32, 220, .62);
+    }
+    50% {
+        box-shadow:
+            0 0 0 1px var(--rx-border),
+            0 0 0 14px rgba(241, 235, 254, .95),
+            0 0 0 27px rgba(241, 235, 254, .26),
+            0 22px 42px -18px rgba(75, 32, 220, .52);
+    }
+}
+
+#review-app .brand-box .logo-disc img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 50%;
+    background: #FFFFFF;
+    object-fit: contain;
+    padding: 5px;
+}
+
+#review-app .brand-box .logo-disc .rg-monogram {
+    display: block;
+    color: #FFFFFF;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -.03em;
+    line-height: 1;
+}
+
+#review-app .brand-box .rg-profile-pill,
+#review-app .brand-box h1 {
+    position: relative;
+    z-index: 1;
+    display: block;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--rx-navy);
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.22;
+    letter-spacing: -.035em;
+    overflow-wrap: anywhere;
+}
+
+#review-app .brand-box .rg-profile-note,
+#review-app .brand-box > p {
+    position: relative;
+    z-index: 1;
+    max-width: 34ch;
+    margin: 7px auto 0;
+    color: var(--rx-soft);
+    font-size: 12.5px;
+    line-height: 1.6;
+}
+
+/* keep the eyebrow from inheriting the paragraph rule above */
+#review-app .brand-box > p.rg-profile-eyebrow {
+    max-width: none;
+    margin: 0 0 12px;
+    color: var(--rx-purple);
+    font-size: 10px;
+    line-height: 1;
+}
+
+/* ---------------------------------------------------------------------
+   Social / website links — equal, thumb-sized tiles
+   --------------------------------------------------------------------- */
+
+#review-app .rg-social {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(66px, 1fr));
+    gap: 8px;
+    margin: 20px 0 2px;
+    padding: 0;
+    overflow: visible;
+    justify-content: center;
+}
+
+#review-app .rg-social-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    width: auto;
+    min-width: 0;
+    min-height: 86px;
+    padding: 11px 5px 9px;
+    border: 1px solid var(--rx-border);
+    border-radius: 18px;
+    background: #FFFFFF;
+    color: var(--rx-navy);
+    text-align: center;
+    text-decoration: none;
+    white-space: normal;
+    box-shadow: 0 10px 24px -22px rgba(20, 22, 35, .8);
+    transition: transform .18s cubic-bezier(.2, .8, .3, 1), box-shadow .18s ease, border-color .18s ease;
+}
+
+#review-app .rg-social-btn:hover,
+#review-app .rg-social-btn:focus-visible {
+    transform: translateY(-3px);
+    border-color: #D6C3F8;
+    box-shadow: 0 16px 28px -20px rgba(75, 32, 220, .72);
+}
+
+#review-app .rg-social-btn:active { transform: translateY(-1px) scale(.98); }
+
+#review-app .rg-social-icon {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    margin: 0;
+    border-radius: 13px;
+    background: var(--rx-lavender);
+    color: var(--rx-purple);
+    font-size: 16px;
+    line-height: 1;
+    transition: transform .18s ease, background .18s ease;
+}
+
+#review-app .rg-social-btn:hover .rg-social-icon { transform: scale(1.06); }
+
+#review-app .rg-social-label {
+    display: block;
+    max-width: 100%;
+    color: var(--rx-navy);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -.01em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#review-app .rg-social-btn.is-google .rg-social-icon { color: #4285F4; background: #EEF4FF; }
+#review-app .rg-social-btn.is-instagram .rg-social-icon { color: #C13584; background: #FDF0F7; }
+#review-app .rg-social-btn.is-whatsapp .rg-social-icon { color: #1FA855; background: #ECFAF2; }
+#review-app .rg-social-btn.is-facebook .rg-social-icon { color: #1877F2; background: #EEF4FF; }
+#review-app .rg-social-btn.is-website .rg-social-icon { color: var(--rx-purple); background: #FFFFFF; border: 1px solid var(--rx-border); }
+
+#review-app .rg-social-logo {
+    width: 26px;
+    height: 26px;
+    display: block;
+    border-radius: 7px;
+    background: #FFFFFF;
+    object-fit: contain;
+}
+
+/* ---------------------------------------------------------------------
+   Progress rail
+   --------------------------------------------------------------------- */
+
+#review-app .rg-progress {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+#review-app .rg-progress li {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-width: 0;
+    padding: 7px 6px;
+    border: 1px solid var(--rx-border);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .7);
+    color: #6A6382;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0;
+    white-space: nowrap;
+}
+
+#review-app .rg-progress li b {
+    display: grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--rx-lavender);
+    color: var(--rx-purple);
+    font-size: 9.5px;
+    font-weight: 800;
+}
+
+#review-app .rg-progress li.is-current {
+    border-color: #DCC8FB;
+    background: var(--rx-lavender);
+    color: var(--rx-navy);
+    font-weight: 700;
+}
+
+#review-app .rg-progress li.is-current b { background: var(--rx-purple); color: #FFFFFF; }
+#review-app .rg-progress li.is-done b { background: var(--rx-lime); color: #3E4A12; }
+
+/* ---------------------------------------------------------------------
+   Rating
+   --------------------------------------------------------------------- */
+
+#review-app .intro {
+    margin-top: 28px;
+    padding: 0;
+    text-align: center;
+}
+
+#review-app .intro h2 {
+    margin: 0;
+    color: var(--rx-navy);
+    font-size: 35px;
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -.045em;
+}
+
+#review-app .intro h2 em { font-style: normal; color: var(--rx-purple); }
+
+#review-app .intro > p {
+    max-width: 34ch;
+    margin: 10px auto 0;
+    color: var(--rx-soft);
+    font-size: 13.5px;
+    line-height: 1.55;
+}
+
+#review-app .stars {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin: 18px 0 2px;
+    padding: 0;
+}
+
+#review-app .star {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #D9CBF5;
+    font-size: 42px;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform .16s cubic-bezier(.3, 1.6, .5, 1), color .16s ease, filter .16s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#review-app .star:hover,
+#review-app .star:hover ~ .star { transform: translateY(-3px) scale(1.06); }
+
+#review-app .star.active,
+#review-app .star[aria-checked="true"] {
+    color: var(--rx-gold);
+    filter: drop-shadow(0 7px 12px rgba(233, 180, 76, .38));
+    animation: rxStarPop .3s cubic-bezier(.3, 1.6, .5, 1);
+}
+
+@keyframes rxStarPop {
+    0%   { transform: scale(.86); }
+    70%  { transform: scale(1.12); }
+    100% { transform: scale(1); }
+}
+
+#review-app .star:focus-visible {
+    outline: 3px solid var(--rx-violet);
+    outline-offset: 2px;
+    border-radius: 12px;
+}
+
+#review-app #ratingLabel {
+    min-height: 18px;
+    margin: 4px 0 0;
+    color: #6B6482;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+#review-app #ratingLabel.is-set { color: var(--rx-purple); font-weight: 700; }
+
+#review-app .rg-direct {
+    margin: 15px 0 0;
+    padding: 0;
+    text-align: center;
+}
+
+#review-app .rg-direct-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    min-height: 50px;
+    padding: 0 16px;
+    border: 1px solid #DDCDF8;
+    border-radius: 16px;
+    background: var(--rx-lavender);
+    color: var(--rx-purple);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8);
+    transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+}
+
+#review-app .rg-direct-link:hover {
+    transform: translateY(-1px);
+    background: #EBE2FD;
+    box-shadow: 0 12px 24px -20px rgba(75, 32, 220, .8);
+}
+
+#review-app .rg-direct-g {
+    display: grid;
+    place-items: center;
+    width: 27px;
+    height: 27px;
+    border: 1px solid var(--rx-border);
+    border-radius: 50%;
+    background: #FFFFFF;
+    color: #4285F4;
+    font-size: 13px;
+}
+
+#review-app .rg-direct-arrow { font-size: 15px; line-height: 1; }
+
+#review-app .rg-or {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 12px 0 10px;
+    color: #746D8C;
+    font-size: 11px;
+    letter-spacing: .04em;
+}
+
+#review-app .rg-or::before,
+#review-app .rg-or::after {
+    content: "";
+    position: static;
+    flex: 1;
+    height: 1px;
+    background: var(--rx-border);
+}
+
+#review-app .rg-or span { flex: 0 0 auto; }
+
+#review-app .rg-privacy {
+    max-width: 38ch;
+    margin: 10px auto 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #6B6480;
+    font-size: 11.5px;
+    line-height: 1.6;
+}
+
+#review-app .rg-privacy::before {
+    content: "✦";
+    margin-right: 5px;
+    color: var(--rx-purple);
+    font-size: 9px;
+    vertical-align: 1px;
+}
+
+#review-app .rg-info-box {
+    margin-top: 14px;
+    border: 1px solid var(--rx-border);
+    border-radius: 16px;
+    background: #FFFFFF;
+    text-align: left;
+}
+
+/* ---------------------------------------------------------------------
+   Steps, fields and buttons
+   --------------------------------------------------------------------- */
+
+#review-app .customer-body { margin-top: 20px; }
+
+#review-app .field { margin-bottom: 12px; }
+
+#review-app .field label {
+    display: block;
+    margin: 0 0 6px;
+    color: var(--rx-navy);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+#review-app .field input,
+#review-app .field textarea,
+#review-app .field select,
+#review-app .draft-box textarea {
+    width: 100%;
+    border: 1.5px solid var(--rx-border);
+    border-radius: 14px;
+    background: #FFFFFF;
+    color: var(--rx-navy);
+    font-family: inherit;
+    font-size: 13.5px;
+    line-height: 1.6;
+    padding: 12px 14px;
+    transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+#review-app .field input:focus,
+#review-app .field textarea:focus,
+#review-app .field select:focus,
+#review-app .draft-box textarea:focus {
+    outline: 0;
+    border-color: var(--rx-violet);
+    background: #FFFDFB;
+    box-shadow: 0 0 0 4px rgba(123, 75, 245, .12);
+}
+
+#review-app .field textarea { min-height: 104px; resize: vertical; }
+
+#review-app .chips { gap: 7px; }
+
+#review-app .chip {
+    min-height: 34px;
+    padding: 0 12px;
+    border: 1px solid var(--rx-border);
+    border-radius: 999px;
+    background: #FFFFFF;
+    color: var(--rx-navy);
+    font-size: 11.5px;
+    font-weight: 600;
+    transition: transform .16s ease, background .16s ease, border-color .16s ease, color .16s ease;
+}
+
+#review-app .chip:hover { transform: translateY(-1px); border-color: #D8C6F8; }
+
+#review-app .chip.selected,
+#review-app .chip.is-active {
+    border-color: transparent;
+    background: var(--rx-purple);
+    color: #FFFFFF;
+}
+
+#review-app .main-button {
+    min-height: 52px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--rx-purple) 0%, var(--rx-violet) 62%, var(--rx-purple) 100%);
+    color: #FFFFFF;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: -.01em;
+    box-shadow: 0 16px 30px -18px rgba(75, 32, 220, .8);
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+}
+
+#review-app .main-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 20px 36px -18px rgba(75, 32, 220, .92);
+}
+
+#review-app .main-button:disabled { opacity: .5; box-shadow: none; cursor: not-allowed; }
+
+#review-app .outline-button {
+    min-height: 50px;
+    border: 1.5px solid var(--rx-border);
+    border-radius: 16px;
+    background: #FFFFFF;
+    color: var(--rx-navy);
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 700;
+    transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+
+#review-app .outline-button:hover { transform: translateY(-1px); border-color: #D3BEF6; background: #FBF8FF; }
+
+#review-app .draft-box {
+    border: 1px solid var(--rx-border);
+    border-radius: 18px;
+    background: #FFFFFF;
+    box-shadow: 0 18px 40px -38px rgba(20, 22, 35, .8);
+}
+
+#review-app .draft-heading { color: var(--rx-navy); font-weight: 700; }
+#review-app .draft-heading button,
+#review-app .link-button { color: var(--rx-purple); font-weight: 700; }
+
+#review-app .fade-in { animation: rxStepIn .32s cubic-bezier(.22, .9, .28, 1) both; }
+
+@keyframes rxStepIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+}
+
+#review-app .success-mark { background: linear-gradient(135deg, var(--rx-purple), var(--rx-violet)); }
+
+/* ---------------------------------------------------------------------
+   Wheel — premium disc, gold rim, ReviewAI hub
+   --------------------------------------------------------------------- */
+
+#review-app .rg-wheel-section,
+#review-app #wheelSection.rg-wheel-section {
+    position: relative;
+    margin: 30px 0 4px;
+    padding: 24px 20px 20px;
+    border: 1px solid #EADFC8;
+    border-radius: 28px;
+    background:
+        radial-gradient(120% 82% at 50% -10%, rgba(241, 235, 254, .95) 0%, rgba(241, 235, 254, 0) 62%),
+        linear-gradient(180deg, #FFFDFB 0%, #FBF7FF 100%);
+    box-shadow:
+        0 28px 64px -48px rgba(20, 22, 35, .55),
+        inset 0 1px 0 rgba(255, 255, 255, .9);
+    text-align: center;
+    overflow: hidden;
+}
+
+#review-app .rg-wheel-section::before {
+    content: "✦";
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    color: var(--rx-gold);
+    font-size: 12px;
+    opacity: .8;
+    pointer-events: none;
+}
+
+#review-app .rg-wheel-head { margin: 0 0 10px; }
+
+#review-app .rg-wheel-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 auto 9px;
+    padding: 7px 14px;
+    border: 1px solid #E3D5FA;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .78);
+    color: var(--rx-purple);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+#review-app .rg-wheel-title,
+#review-app .rg-wheel-head h2 {
+    margin: 2px 0 7px;
+    color: var(--rx-navy);
+    font-size: 29px;
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -.04em;
+}
+
+#review-app .rg-wheel-title em {
+    font-style: normal;
+    color: var(--rx-purple);
+}
+
+#review-app .rg-wheel-sub {
+    max-width: 32ch;
+    margin: 0 auto;
+    color: var(--rx-soft);
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+#review-app .rg-wheel-stage {
+    position: relative;
+    width: min(302px, 78vw);
+    margin: 20px auto 8px;
+    aspect-ratio: 1 / 1;
+}
+
+#review-app .rg-wheel-stage::before {
+    content: "";
+    position: absolute;
+    inset: -13px;
+    border-radius: 50%;
+    border: 1px dashed rgba(233, 180, 76, .35);
+    pointer-events: none;
+}
+
+#review-app .rg-wheel-disc {
+    position: absolute;
+    inset: 0;
+    filter: drop-shadow(0 18px 28px rgba(75, 32, 220, .24));
+    will-change: transform;
+}
+
+#review-app .rg-wheel-svg { display: block; width: 100%; height: 100%; }
+
+#review-app .rg-wheel-pointer {
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    z-index: 5;
+    width: 0;
+    height: 0;
+    transform: translateX(-50%);
+    border-left: 13px solid transparent;
+    border-right: 13px solid transparent;
+    border-top: 25px solid var(--rx-gold);
+    filter: drop-shadow(0 4px 6px rgba(120, 70, 0, .28));
+}
+
+#review-app .rg-wheel-pointer::after { content: none; }
+
+/* the centre is the ReviewAI-branded spin button */
+#review-app .rg-wheel-stage .rg-wheel-hub {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    z-index: 6;
+    width: 92px !important;
+    height: 92px !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 4px solid #FFFFFF !important;
+    border-radius: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    background: linear-gradient(145deg, #6A3CF0 0%, var(--rx-purple) 52%, var(--rx-purple-deep) 100%) !important;
+    color: #FFFFFF !important;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -.01em;
+    cursor: pointer;
+    box-shadow:
+        0 0 0 1px rgba(233, 180, 76, .55),
+        0 0 0 7px rgba(255, 253, 251, .92),
+        0 0 0 9px rgba(233, 180, 76, .28),
+        0 18px 32px -14px rgba(75, 32, 220, .78) !important;
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease !important;
+}
+
+#review-app .rg-wheel-stage .rg-wheel-hub::before { content: none !important; }
+
+#review-app .rg-wheel-stage .rg-wheel-hub:hover:not(:disabled) {
+    transform: translate(-50%, -50%) scale(1.055) !important;
+    box-shadow:
+        0 0 0 1px rgba(233, 180, 76, .7),
+        0 0 0 7px rgba(255, 253, 251, .95),
+        0 0 0 10px rgba(233, 180, 76, .38),
+        0 22px 38px -14px rgba(75, 32, 220, .9) !important;
+}
+
+#review-app .rg-hub-brand {
+    display: block;
+    margin-bottom: 1px;
+    color: rgba(255, 255, 255, .82);
+    font-size: 7.5px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+#review-app .rg-hub-spark { display: block; font-size: 14px; line-height: 1; }
+#review-app .rg-hub-label { display: block; margin-top: 2px; font-size: 11.5px; font-weight: 800; }
+
+#review-app .rg-wheel-hub.is-busy .rg-hub-spark { animation: rgHubSpin 1s linear infinite; }
+
+#review-app .rg-wheel-section.is-ready .rg-wheel-stage::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 3;
+    width: 96px;
+    height: 96px;
+    border: 2px solid rgba(233, 180, 76, .55);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    animation: rxHubRing 2.6s cubic-bezier(.2, .7, .3, 1) infinite;
+}
+
+@keyframes rxHubRing {
+    0%   { opacity: .75; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0;   transform: translate(-50%, -50%) scale(1.34); }
+}
+
+/* locked wheel: still a colourful preview, muted hub */
+#review-app .rg-wheel-section.is-locked .rg-wheel-disc { filter: saturate(.9) opacity(.96); }
+
+#review-app .rg-wheel-section.is-locked .rg-wheel-stage .rg-wheel-hub:disabled {
+    opacity: 1 !important;
+    background: linear-gradient(145deg, #9D89E2 0%, #8B74D4 60%, #7A62C8 100%) !important;
+    border-color: rgba(255, 255, 255, .95) !important;
+    color: #FFFFFF !important;
+    box-shadow:
+        0 0 0 1px rgba(233, 180, 76, .35),
+        0 0 0 7px rgba(255, 253, 251, .85),
+        0 12px 24px -16px rgba(75, 32, 220, .55) !important;
+    cursor: not-allowed;
+    filter: none !important;
+}
+
+#review-app .rg-wheel-unlock {
+    margin-top: 8px;
+    color: var(--rx-purple);
+    font-weight: 700;
+}
+
+#review-app .rg-wheel-note {
+    max-width: 33ch;
+    margin: 14px auto 0;
+    padding: 10px 14px;
+    border: 1px solid #E6DAFA;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .75);
+    color: #5D5478;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.55;
+}
+
+#review-app .rg-wheel-section.is-ready .rg-wheel-note {
+    border-color: #D8C5F8;
+    background: var(--rx-lavender);
+    color: var(--rx-purple);
+    font-weight: 700;
+}
+
+#review-app .rg-wheel-result {
+    margin: 16px 0 0;
+    padding: 18px 16px;
+    border: 1px solid #E6DAF9;
+    border-radius: 20px;
+    background: #FFFFFF;
+    box-shadow: 0 22px 48px -36px rgba(20, 22, 35, .6);
+}
+
+#review-app .rg-coupon {
+    border: 1.5px dashed #CDB9F5;
+    border-radius: 14px;
+    background: var(--rx-lavender);
+}
+
+#review-app .rg-coupon code { color: var(--rx-purple); }
+#review-app .rg-coupon-copy { border-color: #D8C6F8; color: var(--rx-purple); background: #FFFFFF; }
+
+#review-app .rg-wheel-terms {
+    margin: 14px 0 0;
+    padding: 12px 0 0;
+    border-top: 1px dashed #E6DBCC;
+    text-align: left;
+}
+
+#review-app .rg-wheel-terms summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--rx-purple);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+}
+
+#review-app .rg-wheel-terms summary::-webkit-details-marker { display: none; }
+#review-app .rg-wheel-terms summary > span { display: none; }
+#review-app .rg-wheel-terms summary::after { content: "⌄"; font-size: 14px; line-height: 1; }
+#review-app .rg-wheel-terms[open] summary::after { content: "⌃"; }
+
+#review-app .rg-wheel-terms p {
+    margin: 9px 0 0;
+    color: #6F6886;
+    font-size: 11px;
+    line-height: 1.65;
+}
+
+/* ---------------------------------------------------------------------
+   Toast + small feedback
+   --------------------------------------------------------------------- */
+
+#review-app .toast { border-radius: 14px; background: var(--rx-navy); color: #FFFFFF; }
+
+/* ---------------------------------------------------------------------
+   Phone tuning — no horizontal scroll, thumbs first
+   --------------------------------------------------------------------- */
+
+@media (max-width: 560px) {
+    #review-app { padding: 14px 10px 34px; }
+
+    #review-app .customer-shell {
+        width: 100%;
+        max-width: 100%;
+        padding: 15px 18px 24px;
+        border-radius: 28px;
+    }
+
+    #review-app .brand-box { margin-top: 22px; }
+    #review-app .brand-box .logo-disc { width: 80px; height: 80px; }
+    #review-app .brand-box .rg-profile-pill,
+    #review-app .brand-box h1 { font-size: 20px; }
+
+    #review-app .rg-social { gap: 7px; margin-top: 18px; }
+    #review-app .rg-social-btn { min-height: 80px; padding: 9px 3px 8px; border-radius: 16px; }
+    #review-app .rg-social-icon { width: 35px; height: 35px; font-size: 15px; border-radius: 11px; }
+    #review-app .rg-social-label { font-size: 10.5px; }
+
+    #review-app .rg-progress { gap: 5px; }
+    #review-app .rg-progress li { padding: 7px 4px; font-size: 10px; }
+
+    #review-app .intro { margin-top: 24px; }
+    #review-app .intro h2 { font-size: 30px; }
+    #review-app .intro > p { font-size: 13px; }
+
+    #review-app .star { width: 44px; height: 44px; font-size: 38px; }
+
+    #review-app .rg-wheel-section,
+    #review-app #wheelSection.rg-wheel-section { margin-top: 26px; padding: 21px 14px 17px; border-radius: 24px; }
+    #review-app .rg-wheel-title,
+    #review-app .rg-wheel-head h2 { font-size: 25px; }
+    #review-app .rg-wheel-stage { width: min(292px, 78vw); margin-top: 19px; }
+    #review-app .rg-wheel-stage .rg-wheel-hub { width: 84px !important; height: 84px !important; }
+
+    #review-app .bar-share { padding: 0 13px; font-size: 12px; }
+    #review-app .bar-share svg { width: 14px; height: 14px; }
+}
+
+@media (max-width: 380px) {
+    #review-app { padding: 10px 7px 28px; }
+    #review-app .customer-shell { padding: 13px 14px 22px; border-radius: 24px; }
+
+    #review-app .intro h2 { font-size: 27px; }
+    #review-app .star { width: 40px; height: 40px; font-size: 34px; }
+
+    #review-app .rg-social-btn { min-height: 74px; }
+    #review-app .rg-social-label { font-size: 9.5px; }
+
+    #review-app .rg-wheel-title,
+    #review-app .rg-wheel-head h2 { font-size: 23px; }
+    #review-app .rg-wheel-stage .rg-wheel-hub { width: 76px !important; height: 76px !important; }
+    #review-app .rg-wheel-stage .rg-wheel-hub .rg-hub-label { font-size: 10.5px; }
+
+    #review-app .bar-share { width: 38px; padding: 0; justify-content: center; }
+    #review-app .bar-share span { display: none; }
+}
+
+/* ---------------------------------------------------------------------
+   Motion preferences
+   --------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    #review-app .customer-shell,
+    #review-app .brand-box .logo-disc,
+    #review-app .star.active,
+    #review-app .rg-wheel-section.is-ready .rg-wheel-stage::after,
+    #review-app .fade-in { animation: none !important; }
+
+    .rg-spark { animation: none !important; }
+
+    #review-app .rg-wheel-hub.is-busy .rg-hub-spark { animation: none !important; }
+
+    #review-app .rg-social-btn,
+    #review-app .main-button,
+    #review-app .outline-button,
+    #review-app .rg-direct-link { transition: none !important; }
+}

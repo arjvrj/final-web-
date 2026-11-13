@@ -1,0 +1,462 @@
+/* ReviewGrow — the Reviews & Feedback page, upgraded.
+ *
+ * HAND-WRITTEN and additive, like customer-premium.css. It loads after
+ * dashboard-green.css and never restyles the shell (sidebar, topbar, buttons,
+ * panels): it only dresses the parts of this one page that the design does not
+ * cover yet — the five stat tiles, the segmented tabs, the search field, the
+ * empty state and the review rows.
+ *
+ * Palette is the dashboard's own: ink #173a2c, deep #173d2e, muted #617667,
+ * line #e3ebe0, pale #f5f8f2, accent #dcebd6.
+ */
+
+/* ==========================================================================
+   1. Five stat tiles
+   ========================================================================== */
+
+.rg-stats {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.rg-stat {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 14px 16px 13px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.rg-stat::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: var(--rg-tone, #8aae7f);
+    opacity: .85;
+}
+
+.rg-stat-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.rg-stat-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.rg-stat-icon {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: var(--rg-tone-soft, #eef4ea);
+    color: var(--rg-tone, #4b7a52);
+    font-size: 12px;
+}
+
+.rg-stat-value {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -.02em;
+    color: var(--deep);
+    font-variant-numeric: tabular-nums;
+}
+
+.rg-stat-note { font-size: 11.5px; color: var(--muted); }
+
+.rg-stat.is-total   { --rg-tone: #4b7a52; --rg-tone-soft: #eaf2e5; }
+.rg-stat.is-avg     { --rg-tone: #b07d1a; --rg-tone-soft: #fbf1db; }
+.rg-stat.is-good    { --rg-tone: #2f7d4f; --rg-tone-soft: #e4f3e8; }
+.rg-stat.is-low     { --rg-tone: #b3543d; --rg-tone-soft: #fbeae5; }
+.rg-stat.is-private { --rg-tone: #4a5fa8; --rg-tone-soft: #eaedf8; }
+
+.rg-stars-inline { color: #e0a12a; letter-spacing: .08em; font-size: 12px; }
+
+/* ==========================================================================
+   2. Tabs + search
+   ========================================================================== */
+
+.rg-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.rg-tabs {
+    display: inline-flex;
+    padding: 4px;
+    gap: 2px;
+    background: var(--pale);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+.rg-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+.rg-tab:hover { color: var(--deep); background: #fff; }
+
+.rg-tab.is-active {
+    background: #fff;
+    color: var(--deep);
+    box-shadow: 0 1px 3px rgba(23, 58, 44, .12);
+}
+
+.rg-tab-count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--deep);
+    font-size: 11px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.rg-tab.is-active .rg-tab-count { background: var(--deep); color: #fff; }
+
+.rg-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1 1 220px;
+    max-width: 340px;
+}
+
+.rg-search i {
+    position: absolute;
+    left: 12px;
+    font-size: 12px;
+    color: #9aa89b;
+    pointer-events: none;
+}
+
+.rg-search input {
+    width: 100%;
+    max-width: 100%;
+    min-height: 40px;
+    padding: 8px 12px 8px 32px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--ink);
+    font-size: 13px;
+}
+
+.rg-search input:focus {
+    outline: none;
+    border-color: #8aae7f;
+    box-shadow: 0 0 0 3px rgba(138, 174, 127, .22);
+}
+
+.rg-search-clear {
+    position: absolute;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: var(--pale);
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1;
+}
+
+.rg-search-clear:hover { background: var(--accent); color: var(--deep); }
+
+/* ==========================================================================
+   3. Empty state
+   ========================================================================== */
+
+.rg-empty {
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 46px 20px 42px;
+}
+
+.rg-empty-disc {
+    display: grid;
+    place-items: center;
+    width: 62px;
+    height: 62px;
+    margin-bottom: 14px;
+    border-radius: 50%;
+    background: linear-gradient(160deg, #eaf3e4, #dcebd6);
+    color: #4b7a52;
+    font-size: 24px;
+}
+
+.rg-empty h3 {
+    margin: 0 0 6px;
+    font-size: 17px;
+    letter-spacing: -.01em;
+    color: var(--deep);
+}
+
+.rg-empty p {
+    margin: 0 auto;
+    max-width: 340px;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--muted);
+}
+
+.rg-empty-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 18px;
+}
+
+.rg-hint-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 14px;
+    font-size: 11.5px;
+    color: var(--muted);
+}
+
+.rg-copy-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 0;
+    padding: 4px 2px;
+    color: var(--deep);
+    font-size: 11.5px;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.rg-copy-link:hover { color: #4b7a52; }
+
+/* ==========================================================================
+   4. Review rows
+   ========================================================================== */
+
+.rg-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+
+.rg-table thead th {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+}
+
+.rg-table tbody tr { transition: background .14s ease; }
+.rg-table tbody tr:hover { background: #fbfdf9; }
+
+.rg-table tbody td {
+    padding: 12px;
+    border-bottom: 1px solid #eff4ec;
+    vertical-align: middle;
+    font-size: 13px;
+}
+
+.rg-table tbody tr:last-child td { border-bottom: 0; }
+
+.rg-person { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.rg-person > div { min-width: 0; }
+
+.rg-avatar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #eaf2e5;
+    color: #3d6b45;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.rg-person-name { font-weight: 600; color: var(--deep); line-height: 1.25; }
+.rg-person-sub { font-size: 11px; color: var(--muted); }
+
+.rg-stars { color: #e0a12a; font-size: 13px; letter-spacing: .06em; white-space: nowrap; }
+.rg-stars .is-off { color: #d9e2d6; }
+
+.rg-person-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rg-person-contact {
+    font-size: 11px;
+    line-height: 1.45;
+    color: var(--muted);
+    max-width: 168px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.rg-row-actions .button { min-height: 34px; padding: 0 10px; gap: 6px; }
+.rg-row-actions .button i { font-size: 11px; }
+.rg-row-actions .button-danger { border-color: #ecd2cc; }
+.rg-row-actions .button-danger:hover:not(:disabled) { background: #fff4f1; }
+
+.rg-snippet {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-width: 38ch;
+    color: #40604f;
+    line-height: 1.45;
+}
+
+.rg-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--pale);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.rg-chip.is-ai    { background: #eef1fb; border-color: #dde3f6; color: #41538f; }
+.rg-chip.is-own   { background: #eef4ea; border-color: #dde9d8; color: #3d6b45; }
+.rg-chip.is-new   { background: #fdf1ee; border-color: #f3d9d1; color: #9e3e37; }
+.rg-chip.is-read  { background: var(--pale); color: var(--muted); }
+
+.rg-row-actions { display: flex; gap: 6px; flex-wrap: nowrap; justify-content: flex-end; }
+
+/* Keep the two action columns from wrapping mid-word on wide screens. */
+.rg-table td[data-label="Date"],
+.rg-table td[data-label="Actions"] { white-space: nowrap; }
+
+/* ==========================================================================
+   5. Small screens — the table becomes a stack of cards
+   ========================================================================== */
+
+@media (max-width: 1080px) {
+    .rg-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+    .rg-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .rg-stat-value { font-size: 22px; }
+    .rg-toolbar { align-items: stretch; }
+    .rg-tabs { width: 100%; }
+    .rg-tab { flex: 1; justify-content: center; }
+    .rg-search, .rg-search input { width: 100%; }
+
+    /* The billing table default (min-width: 480px) would force a scrollbar
+       once the rows turn into cards, so reset it here. */
+    .billing-scroll { overflow: visible; }
+    /* dashboard-green caps these tables at 860px via `.panel .billing-scroll
+       table`; match that specificity so the cards can actually shrink. */
+    .panel .billing-scroll table.rg-table { min-width: 0; }
+
+    .rg-table thead { display: none; }
+
+    .rg-table, .rg-table tbody, .rg-table tr, .rg-table td { display: block; width: 100%; }
+
+    .rg-table tbody tr {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px 14px;
+        margin-bottom: 10px;
+        background: #fff;
+    }
+
+    .rg-table tbody td {
+        border: 0;
+        padding: 4px 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .rg-table tbody td::before {
+        content: attr(data-label);
+        flex: none;
+        width: 76px;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        color: var(--muted);
+        padding-top: 2px;
+    }
+
+    .rg-table tbody td:first-child { padding-top: 0; }
+    .rg-table tbody td:first-child::before { display: none; }
+    .rg-row-actions { justify-content: flex-start; flex-wrap: wrap; }
+    .rg-snippet { max-width: none; }
+    .rg-table tbody td[data-label="Date"],
+    .rg-table tbody td[data-label="Actions"] { white-space: normal; }
+
+    /* Let long review text wrap instead of running past the card edge. */
+    .rg-table tbody td > .rg-snippet,
+    .rg-table tbody td > .rg-person { flex: 1 1 auto; min-width: 0; }
+    .rg-snippet { overflow-wrap: anywhere; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rg-tab, .rg-table tbody tr { transition: none !important; }
+}
+
+/* ==========================================================================
+   6. Utilities used by this page only
+   ========================================================================== */
+
+.rg-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.rg-visually-plain { font-size: 11px; color: var(--muted); letter-spacing: 0; }

@@ -1,0 +1,1089 @@
+/* customer-reference.css — final visual layer for the customer review page.
+ *
+ * Loaded last on review.php only, after customer.css / customer-premium.css /
+ * customer-refresh.css / customer-wheel.css / customer-cream.css. It retunes the
+ * page to the approved reference: warm cream page, one floating mobile-style
+ * card, purple gradient accents, lavender borders, gold stars, soft entrance and
+ * floating-sparkle motion.
+ *
+ * Nothing here changes behaviour. Every control keeps the markup, ids, handlers
+ * and backend calls it already had; this file is colour, spacing, shape, motion.
+ */
+
+:root {
+  --rf-bg:        #FFF9F0;
+  --rf-card:      #FFFCF7;
+  --rf-primary:   #6529ED;
+  --rf-secondary: #9B5CFF;
+  --rf-lavender:  #F2E8FF;
+  --rf-border:    #E9D8FA;
+  --rf-ink:       #17164F;
+  --rf-ink-soft:  #645A99;
+  --rf-star:      #FFAC21;
+  --rf-white:     #FFFFFF;
+}
+
+/* ------------------------------------------------------------------ *
+ * Background: cream, two big soft circles, diagonal wash, sparkles
+ * ------------------------------------------------------------------ */
+
+body {
+  background-color: var(--rf-bg);
+  background-image:
+    /* purple circle in the bottom-left corner, mostly off-screen */
+    radial-gradient(circle at 2% 106%, rgba(101, 41, 237, .34) 0%, rgba(101, 41, 237, .13) 14%, rgba(101, 41, 237, 0) 30%),
+    /* lavender circle in the top-right corner */
+    radial-gradient(circle at 100% -2%, rgba(155, 92, 255, .26) 0%, rgba(155, 92, 255, .09) 16%, rgba(155, 92, 255, 0) 34%),
+    /* soft ambient glow behind the card only */
+    radial-gradient(460px 420px at 50% 38%, rgba(155, 92, 255, .09), rgba(155, 92, 255, 0) 70%),
+    /* faint diagonal wash, warm cream stays dominant */
+    linear-gradient(118deg, rgba(242, 232, 255, .20) 0%, rgba(255, 249, 240, 0) 26%, rgba(255, 249, 240, 0) 74%, rgba(242, 232, 255, .16) 100%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* floating sparkles over the whole page (behind the card) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -40px;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'><g fill='%239B5CFF' opacity='.62'><path d='M46 38c1.9 7.6 4 9.7 11.6 11.6-7.6 1.9-9.7 4-11.6 11.6-1.9-7.6-4-9.7-11.6-11.6 7.6-1.9 9.7-4 11.6-11.6z' opacity='.55'/><path d='M232 96c1.3 5.2 2.7 6.6 7.9 7.9-5.2 1.3-6.6 2.7-7.9 7.9-1.3-5.2-2.7-6.6-7.9-7.9 5.2-1.3 6.6-2.7 7.9-7.9z' opacity='.42'/><path d='M118 214c1.5 6 3.2 7.7 9.2 9.2-6 1.5-7.7 3.2-9.2 9.2-1.5-6-3.2-7.7-9.2-9.2 6-1.5 7.7-3.2 9.2-9.2z' opacity='.36'/><path d='M268 250c1 4 2.1 5.1 6.1 6.1-4 1-5.1 2.1-6.1 6.1-1-4-2.1-5.1-6.1-6.1 4-1 5.1-2.1 6.1-6.1z' opacity='.3'/></g></svg>");
+  background-repeat: repeat;
+  background-size: 440px 440px;
+  animation: rf-drift 34s linear infinite;
+}
+
+@keyframes rf-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-320px, 320px, 0); }
+}
+
+/* ------------------------------------------------------------------ *
+ * The card
+ * ------------------------------------------------------------------ */
+
+.customer-shell {
+  width: min(100%, 460px);
+  max-width: 460px;
+  margin: 32px auto;
+  background: rgba(255, 252, 247, .92);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--rf-border);
+  border-radius: 35px;
+  box-shadow:
+    0 40px 90px -40px rgba(101, 41, 237, .45),
+    0 10px 40px -22px rgba(101, 41, 237, .28),
+    0 0 0 1px rgba(255, 255, 255, .7) inset;
+  padding: 22px 30px 30px;
+  position: relative;
+  z-index: 1;
+  animation: rf-card-in .55s cubic-bezier(.22, .9, .28, 1) both;
+}
+
+@keyframes rf-card-in {
+  from { opacity: 0; transform: translateY(18px) scale(.985); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* a faint sparkle layer inside the card, as in the reference */
+.customer-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: .5;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280' viewBox='0 0 280 280'><g fill='%239B5CFF'><path d='M62 40c1.5 6 3.2 7.7 9.2 9.2-6 1.5-7.7 3.2-9.2 9.2-1.5-6-3.2-7.7-9.2-9.2 6-1.5 7.7-3.2 9.2-9.2z' opacity='.5'/><path d='M236 148c1 4 2.1 5.1 6.1 6.1-4 1-5.1 2.1-6.1 6.1-1-4-2.1-5.1-6.1-6.1 4-1 5.1-2.1 6.1-6.1z' opacity='.34'/><path d='M112 236c1.2 4.8 2.5 6.1 7.3 7.3-4.8 1.2-6.1 2.5-7.3 7.3-1.2-4.8-2.5-6.1-7.3-7.3 4.8-1.2 6.1-2.5 7.3-7.3z' opacity='.3'/></g></svg>");
+  background-repeat: repeat;
+  background-size: 280px 280px;
+}
+.customer-shell > * { position: relative; z-index: 1; }
+
+/* ------------------------------------------------------------------ *
+ * Header
+ * ------------------------------------------------------------------ */
+
+.customer-bar {
+  height: 46px;
+  border-bottom: 0;
+  background: transparent;
+}
+.customer-bar .back {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--rf-ink);
+  font-size: 21px;
+}
+.customer-bar .back:hover { background: var(--rf-lavender); }
+
+.bar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 15.5px;
+  font-weight: 800;
+  color: var(--rf-ink);
+  letter-spacing: -.01em;
+}
+.bar-brand .bar-spark {
+  color: var(--rf-primary);
+  font-size: 15px;
+  filter: drop-shadow(0 2px 6px rgba(101, 41, 237, .35));
+}
+.bar-brand strong { color: var(--rf-ink); font-size: 15.5px; font-weight: 800; }
+.bar-globe { color: var(--rf-primary); font-size: 17px; opacity: .75; }
+
+/* ------------------------------------------------------------------ *
+ * Logo + business name
+ * ------------------------------------------------------------------ */
+
+.brand-box {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 2px 0 0;
+  margin-top: 8px;
+}
+.brand-box .logo-disc {
+  width: 74px;
+  height: 74px;
+  margin: 0 auto 16px;
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  background: linear-gradient(150deg, #A75AFF 0%, var(--rf-primary) 58%, #4B18C4 100%);
+  border: 3px solid #FFFFFF;
+  color: #FFFFFF;
+  font-size: 26px;
+  box-shadow:
+    0 0 0 12px rgba(242, 232, 255, .75),
+    0 0 0 24px rgba(242, 232, 255, .35),
+    0 18px 34px -16px rgba(101, 41, 237, .65);
+  animation: rf-breathe 6s ease-in-out infinite;
+}
+.brand-box .logo-disc img { border-radius: 50%; object-fit: cover; }
+.brand-box .rg-monogram { color: #FFFFFF; font-weight: 800; }
+
+@keyframes rf-breathe {
+  0%, 100% { box-shadow: 0 0 0 12px rgba(242, 232, 255, .75), 0 0 0 24px rgba(242, 232, 255, .35), 0 18px 34px -16px rgba(101, 41, 237, .65); }
+  50%      { box-shadow: 0 0 0 16px rgba(242, 232, 255, .9), 0 0 0 30px rgba(242, 232, 255, .28), 0 20px 40px -16px rgba(101, 41, 237, .55); }
+}
+
+.brand-box h1 {
+  min-width: 0;
+  display: inline-block;
+  background: var(--rf-lavender);
+  color: var(--rf-ink);
+  border-radius: 999px;
+  padding: 8px 26px;
+  font-size: 16.5px;
+  font-weight: 800;
+  letter-spacing: -.01em;
+}
+.brand-box > p { color: var(--rf-ink-soft); font-size: 12.5px; margin-top: 7px; }
+
+/* ------------------------------------------------------------------ *
+ * Social buttons + progress
+ * ------------------------------------------------------------------ */
+
+.rg-social { margin-top: 16px; }
+.rg-social-btn {
+  background: var(--rf-white);
+  border: 1px solid var(--rf-border);
+  border-radius: 16px;
+  box-shadow: 0 4px 14px -10px rgba(101, 41, 237, .45);
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+.rg-social-btn:hover {
+  transform: translateY(-2px);
+  border-color: #D9C2FB;
+  box-shadow: 0 10px 20px -14px rgba(101, 41, 237, .55);
+}
+.rg-social-icon { color: var(--rf-primary); }
+.rg-social-label { color: var(--rf-ink-soft); }
+
+.rg-progress { margin-top: 16px; }
+.rg-progress li {
+  background: rgba(255, 255, 255, .7);
+  border: 1px solid var(--rf-border);
+  color: var(--rf-ink-soft);
+  border-radius: 999px;
+  font-weight: 600;
+}
+.rg-progress li b { color: var(--rf-primary); }
+.rg-progress li.is-current {
+  background: var(--rf-lavender);
+  border-color: #DCC8FB;
+  color: var(--rf-ink);
+}
+.rg-progress li.is-current b { background: var(--rf-primary); color: #FFF; }
+
+/* ------------------------------------------------------------------ *
+ * Heading + stars
+ * ------------------------------------------------------------------ */
+
+.intro { margin-top: 26px; }
+.intro h2 {
+  color: var(--rf-ink);
+  font-size: 34px;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -.035em;
+}
+.intro > p { color: var(--rf-ink-soft); font-size: 14px; margin: 10px 0 0; }
+
+.stars { gap: 8px; margin: 18px 0 4px; }
+#review-app .star {
+  font-size: 44px;
+  line-height: 1;
+  padding: 2px;
+  color: #D8C9F3;
+  background: transparent;
+  border: 0;
+  transition: transform .16s cubic-bezier(.3, 1.6, .5, 1), color .16s ease;
+}
+#review-app .star:hover,
+#review-app .star:hover ~ .star { transform: translateY(-3px) scale(1.06); }
+#review-app .star.active,
+#review-app .star[aria-checked="true"] {
+  color: var(--rf-star);
+  filter: drop-shadow(0 6px 10px rgba(255, 172, 33, .35));
+}
+#review-app .star:focus-visible {
+  outline: 3px solid var(--rf-secondary);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+.rating-note { color: var(--rf-ink-soft); font-size: 12.5px; margin-top: 6px; }
+.rating-note.is-set { color: var(--rf-ink); font-weight: 600; }
+
+/* ------------------------------------------------------------------ *
+ * Chips
+ * ------------------------------------------------------------------ */
+
+#review-app .rg-step-head h3 { color: var(--rf-ink); font-size: 16px; font-weight: 800; }
+#review-app .rg-step-head h3 span { color: var(--rf-ink-soft); font-weight: 500; font-size: 14px; }
+.rg-step-badge {
+  background: var(--rf-primary);
+  color: #FFF;
+  box-shadow: 0 8px 16px -8px rgba(101, 41, 237, .8);
+}
+#review-app .rg-pick-count { background: var(--rf-lavender); color: #4B18C4; font-weight: 700; }
+
+#review-app .chips { gap: 9px; }
+#review-app .chip {
+  background: rgba(255, 255, 255, .85);
+  border: 1px solid var(--rf-border);
+  color: #5B3FA8;
+  border-radius: 999px;
+  padding: 9px 17px;
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: transform .14s ease, background .14s ease, color .14s ease, box-shadow .14s ease;
+}
+#review-app .chip:hover {
+  background: var(--rf-lavender);
+  border-color: #DCC8FB;
+  transform: translateY(-1px);
+}
+#review-app .chip.selected,
+#review-app .chip.is-selected,
+#review-app .chip[aria-pressed="true"] {
+  background-image: linear-gradient(135deg, var(--rf-primary), var(--rf-secondary));
+  background-color: var(--rf-primary);
+  border-color: transparent;
+  color: #FFFFFF;
+  box-shadow: 0 10px 20px -12px rgba(101, 41, 237, .9);
+}
+#review-app .rg-hint { color: var(--rf-ink-soft); font-size: 12.5px; }
+
+/* ------------------------------------------------------------------ *
+ * Fields
+ * ------------------------------------------------------------------ */
+
+.field > label { color: var(--rf-ink); font-size: 14px; font-weight: 700; }
+.optional-tag { color: var(--rf-ink-soft); font-weight: 500; }
+.input-wrap {
+  background: rgba(255, 255, 255, .9);
+  border: 1px solid var(--rf-border);
+  border-radius: 20px;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.input-wrap:focus-within {
+  border-color: var(--rf-secondary);
+  box-shadow: 0 0 0 4px rgba(155, 92, 255, .16);
+}
+.input-wrap textarea,
+.input-wrap input { color: var(--rf-ink); font-size: 13.5px; line-height: 1.55; }
+.input-wrap textarea::placeholder,
+.input-wrap input::placeholder { color: #A99BD0; }
+.input-wrap small { color: var(--rf-ink-soft); }
+
+#review-app .language-row > label { color: var(--rf-ink); font-weight: 700; }
+#review-app .language-row select {
+  background-color: var(--rf-white);
+  border: 1px solid var(--rf-border);
+  border-radius: 999px;
+  color: var(--rf-ink);
+  font-weight: 600;
+  padding: 9px 32px 9px 34px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236529ED' stroke-width='1.8' stroke-linecap='round'><circle cx='12' cy='12' r='9'/><path d='M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: 12px center;
+  transition: box-shadow .18s ease, border-color .18s ease;
+}
+#review-app .language-row select:focus {
+  border-color: var(--rf-secondary);
+  box-shadow: 0 0 0 4px rgba(155, 92, 255, .16);
+  outline: none;
+}
+
+/* ------------------------------------------------------------------ *
+ * Primary button
+ * ------------------------------------------------------------------ */
+
+#review-app .main-button {
+  background-image: linear-gradient(135deg, var(--rf-primary) 0%, var(--rf-secondary) 100%);
+  background-color: var(--rf-primary);
+  color: #FFFFFF;
+  border: 0;
+  border-radius: 999px;
+  min-height: 48px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  box-shadow: 0 16px 30px -16px rgba(101, 41, 237, .85);
+  transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+}
+#review-app .main-button::before { content: "✦"; margin-right: 9px; font-size: 14px; }
+#review-app .main-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 38px -18px rgba(101, 41, 237, .9);
+  filter: saturate(1.05);
+}
+#review-app .main-button:active:not(:disabled) { transform: translateY(0) scale(.99); }
+#review-app .main-button:disabled {
+  background-image: none;
+  background-color: #F3ECFF;
+  color: #A99BD0;
+  box-shadow: none;
+  transform: none;
+}
+#review-app .main-button:disabled::before { opacity: .5; }
+
+/* ------------------------------------------------------------------ *
+ * Private link, info card, footer
+ * ------------------------------------------------------------------ */
+
+#review-app .rg-private-toggle {
+  color: var(--rf-primary);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1.5px;
+}
+#review-app .rg-private-toggle:hover { color: #4B18C4; }
+#review-app .rg-cta-hint { color: var(--rf-ink-soft); font-size: 12px; }
+
+.rg-info-box {
+  background: rgba(255, 255, 255, .85);
+  border: 1px solid var(--rf-border);
+  border-radius: 18px;
+  box-shadow: 0 6px 20px -18px rgba(101, 41, 237, .7);
+}
+.rg-info-icon { background: var(--rf-lavender); color: var(--rf-primary); }
+#review-app .rg-info-box .direct.unavailable { color: var(--rf-ink); }
+#review-app .rg-info-box .privacy { color: var(--rf-ink-soft); border-top-color: #F1E7FD; }
+
+#review-app .direct { color: var(--rf-primary); font-weight: 600; }
+#review-app .privacy { color: var(--rf-ink-soft); }
+
+/* ------------------------------------------------------------------ *
+ * Drafts and result states keep the same look
+ * ------------------------------------------------------------------ */
+
+.draft-box {
+  background: rgba(255, 255, 255, .9);
+  border: 1px solid var(--rf-border);
+  border-radius: 18px;
+}
+.draft-heading { color: var(--rf-ink); }
+.draft-heading button { color: var(--rf-primary); }
+.draft-box textarea { color: var(--rf-ink); }
+.outline-button {
+  background: var(--rf-white);
+  border: 1.5px solid var(--rf-border);
+  color: var(--rf-ink);
+  border-radius: 999px;
+}
+.outline-button:hover { border-color: var(--rf-secondary); }
+.success-mark { background: linear-gradient(135deg, var(--rf-primary), var(--rf-secondary)); }
+
+/* ------------------------------------------------------------------ *
+ * Wheel, tuned to the reference dialog
+ * ------------------------------------------------------------------ */
+
+#wheelSection.rg-wheel-section {
+  background: linear-gradient(180deg, #FFFCF7 0%, #FDF4FF 100%);
+  border: 1px solid var(--rf-border);
+  border-radius: 28px;
+}
+.rg-wheel-kicker {
+  background: var(--rf-lavender);
+  color: var(--rf-primary);
+  border-radius: 999px;
+}
+.rg-wheel-title { color: var(--rf-ink); font-weight: 800; letter-spacing: -.02em; }
+.rg-wheel-title em {
+  font-style: normal;
+  background-image: linear-gradient(135deg, var(--rf-primary), var(--rf-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.rg-wheel-sub { color: var(--rf-ink-soft); }
+.rg-wheel-terms, .rg-wheel-terms summary { color: var(--rf-primary); }
+
+/* A locked wheel still shows what can be won (the reference dial is always in
+   colour); only the button explains that a spin is not ready yet. */
+#review-app .rg-wheel-section.is-locked .rg-wheel-disc {
+  filter: saturate(.82) opacity(.92);
+}
+
+/* ------------------------------------------------------------------ *
+ * Motion preferences
+ * ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  .customer-shell,
+  .brand-box .logo-disc { animation: none !important; }
+  #review-app .star,
+  #review-app .chip,
+  #review-app .main-button,
+  .rg-social-btn { transition: none !important; }
+}
+
+/* ------------------------------------------------------------------ *
+ * Phones
+ * ------------------------------------------------------------------ */
+
+@media (max-width: 520px) {
+  body { padding: 18px 12px 30px; }
+  .customer-shell {
+    width: 100%;
+    max-width: none;
+    margin: 0 auto;
+    padding: 18px 18px 26px;
+    border-radius: 30px;
+  }
+  .intro h2 { font-size: 28px; }
+  #review-app .star { font-size: 40px; }
+  .brand-box .logo-disc { width: 66px; height: 66px; }
+  .stars { gap: 6px; }
+}
+
+@media (max-width: 380px) {
+  .customer-shell { padding: 16px 14px 24px; border-radius: 26px; }
+  .intro h2 { font-size: 25px; }
+  #review-app .star { font-size: 36px; }
+  #review-app .chip { font-size: 12.5px; padding: 8px 14px; }
+}
+
+/* ==========================================================================
+   BRAND v2 — the palette of the ReviewAI landing page (reference image 4)
+   Cream page, electric purple, deep navy, soft lime. Everything below simply
+   re-points the tokens and dresses the new blocks; the structure above stands.
+   ========================================================================== */
+
+:root {
+    --rf-bg:        #FBF8F2;
+    --rf-card:      #FFFDFB;
+    --rf-primary:   #4B20DC;
+    --rf-secondary: #7B4BF5;
+    --rf-ink:       #141623;
+    --rf-ink-soft:  #5F6175;
+    --rf-lavender:  #F1EBFE;
+    --rf-border:    #EBE3FB;
+    --rf-lime:      #E7F3B7;
+    --rf-star:      #B79CF7;
+    --rf-gold:      #E9B44C;
+}
+
+/* ---------- page ---------- */
+
+body {
+    background: var(--rf-bg);
+    color: var(--rf-ink);
+}
+
+body::before {
+    background:
+        radial-gradient(560px 460px at 50% -12%, rgba(75, 32, 220, .10), transparent 70%),
+        radial-gradient(420px 380px at -8% 42%, rgba(123, 75, 245, .07), transparent 72%),
+        radial-gradient(420px 380px at 108% 78%, rgba(231, 243, 183, .28), transparent 70%),
+        transparent;
+}
+
+.customer-shell {
+    background: var(--rf-card);
+    border-color: var(--rf-border);
+    box-shadow: 0 40px 90px -46px rgba(20, 22, 35, .38);
+}
+
+/* ---------- header ---------- */
+
+.customer-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.customer-bar .back {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 1px solid var(--rf-border);
+    color: var(--rf-ink);
+    font-size: 16px;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 6px 16px -10px rgba(20, 22, 35, .5);
+    text-decoration: none;
+}
+
+.customer-bar .bar-brand {
+    flex: 1;
+    justify-content: flex-start;
+    padding-left: 4px;
+}
+
+.bar-brand .bar-spark { color: var(--rf-primary); }
+
+.bar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bar-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--rf-border);
+    background: #FFFFFF;
+    color: var(--rf-primary);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.bar-icon:hover { transform: translateY(-2px); box-shadow: 0 8px 18px -12px rgba(75, 32, 220, .8); }
+
+.bar-share {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 38px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--rf-primary), var(--rf-secondary));
+    color: #FFFFFF;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 12px 24px -14px rgba(75, 32, 220, .9);
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.bar-share:hover { transform: translateY(-2px); box-shadow: 0 16px 28px -14px rgba(75, 32, 220, .95); }
+
+/* ---------- business profile ---------- */
+
+.brand-box {
+    position: relative;
+    margin-top: 14px;
+    padding-top: 6px;
+}
+
+.rg-halo {
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    width: 132px;
+    height: 132px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(241, 235, 254, .95), rgba(241, 235, 254, 0) 68%);
+    pointer-events: none;
+}
+
+.rg-arc {
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    width: 190px;
+    height: 96px;
+    transform: translateX(-50%);
+    border-radius: 190px 190px 0 0;
+    border: 1px solid rgba(75, 32, 220, .13);
+    border-bottom: 0;
+    pointer-events: none;
+}
+
+.brand-box .logo-disc {
+    position: relative;
+    z-index: 1;
+    animation: rgLogoIn .6s cubic-bezier(.2, .8, .25, 1) both;
+}
+
+@keyframes rgLogoIn {
+    from { opacity: 0; transform: translateY(10px) scale(.86); }
+    to   { opacity: 1; transform: none; }
+}
+
+.brand-box .logo-disc img { object-fit: cover; }
+
+.brand-box .rg-profile-pill {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    margin-top: 10px;
+    padding: 9px 22px;
+    border-radius: 999px;
+    background: var(--rf-lavender);
+    color: var(--rf-ink);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -.2px;
+    line-height: 1.2;
+    max-width: 86%;
+    overflow-wrap: anywhere;
+}
+
+.brand-box .rg-profile-note {
+    color: var(--rf-ink-soft);
+    font-size: 12.5px;
+    margin: 8px 0 0;
+}
+
+/* ---------- link row ---------- */
+
+.rg-social {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin-top: 18px;
+    padding: 0 2px 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    justify-content: center;
+}
+
+.rg-social::-webkit-scrollbar { display: none; }
+
+.rg-social-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: #FFFFFF;
+    border: 1px solid var(--rf-border);
+    box-shadow: 0 10px 22px -18px rgba(20, 22, 35, .75);
+    color: var(--rf-ink);
+    font-size: 12.5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+
+.rg-social-btn:hover {
+    transform: translateY(-2px);
+    border-color: rgba(75, 32, 220, .35);
+    box-shadow: 0 14px 26px -18px rgba(75, 32, 220, .75);
+}
+
+.rg-social-icon { display: inline-flex; align-items: center; font-size: 15px; }
+.rg-social-label { color: var(--rf-ink); }
+
+.rg-social-btn.is-google .rg-social-icon { color: #4285F4; }
+.rg-social-btn.is-instagram .rg-social-icon { color: #C13584; }
+.rg-social-btn.is-whatsapp .rg-social-icon { color: #25D366; }
+.rg-social-btn.is-facebook .rg-social-icon { color: #1877F2; }
+.rg-social-btn.is-website .rg-social-icon { color: var(--rf-primary); }
+
+.rg-social-logo {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ---------- rating ---------- */
+
+.intro h2 {
+    color: var(--rf-ink);
+    letter-spacing: -1.6px;
+}
+
+.intro h2 em {
+    font-style: normal;
+    color: var(--rf-primary);
+}
+
+#review-app .star {
+    color: var(--rf-star);
+    transition: transform .16s ease, color .16s ease, filter .16s ease;
+}
+
+#review-app .star.active,
+#review-app .star[aria-checked="true"] {
+    color: #F5A524;
+    filter: drop-shadow(0 6px 12px rgba(245, 165, 36, .35));
+}
+
+/* "Go directly to Google — or — privacy", straight under the stars */
+.rg-direct {
+    margin-top: 14px;
+    text-align: center;
+}
+
+.rg-direct-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--rf-primary);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform .16s ease, opacity .16s ease;
+}
+
+.rg-direct-link:hover { transform: translateY(-1px); opacity: .85; }
+
+.rg-direct-g {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 1px solid var(--rf-border);
+    font-size: 11px;
+    color: #4285F4;
+}
+
+.rg-or {
+    position: relative;
+    margin: 14px 0 10px;
+    color: var(--rf-ink-soft);
+    font-size: 12px;
+    letter-spacing: .04em;
+}
+
+.rg-or::before,
+.rg-or::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 16px;
+    height: 1px;
+    background: var(--rf-border);
+}
+
+.rg-or::before { left: calc(50% - 30px); }
+.rg-or::after  { right: calc(50% - 30px); }
+
+.rg-privacy {
+    margin: 0 auto;
+    max-width: 34ch;
+    color: var(--rf-ink-soft);
+    font-size: 12.5px;
+    line-height: 1.6;
+}
+
+/* ---------- wheel card ---------- */
+
+#review-app .rg-wheel-section {
+    margin-top: 26px;
+    padding: 22px 18px 16px;
+    border-radius: 26px;
+    background: var(--rf-card);
+    border: 1px solid var(--rf-border);
+    box-shadow: 0 30px 70px -50px rgba(20, 22, 35, .55);
+    text-align: center;
+}
+
+#review-app .rg-wheel-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0 auto 10px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--rf-lavender);
+    color: var(--rf-primary);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+#review-app .rg-wheel-title {
+    margin: 2px 0 6px;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--rf-ink);
+}
+
+#review-app .rg-wheel-title em {
+    font-style: normal;
+    color: var(--rf-primary);
+}
+
+#review-app .rg-wheel-sub {
+    margin: 0 0 4px;
+    color: var(--rf-ink-soft);
+    font-size: 13.5px;
+}
+
+/* the centre of the wheel is the button */
+#review-app .rg-wheel-hub {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 4;
+    width: 86px;
+    height: 86px;
+    min-height: 0;
+    padding: 0;
+    border: 4px solid #FFFFFF;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--rf-primary), var(--rf-secondary));
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: .01em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    box-shadow: 0 14px 30px -12px rgba(75, 32, 220, .85);
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+}
+
+#review-app .rg-wheel-hub:hover:not(:disabled) {
+    transform: translate(-50%, -50%) scale(1.05);
+    box-shadow: 0 18px 36px -12px rgba(75, 32, 220, .95);
+}
+
+#review-app .rg-wheel-hub:disabled {
+    cursor: not-allowed;
+    opacity: .72;
+    background: linear-gradient(135deg, #8E7BC8, #A99BD8);
+    box-shadow: none;
+}
+
+#review-app .rg-wheel-hub.is-busy .rg-hub-spark { animation: rgHubSpin 1s linear infinite; }
+
+@keyframes rgHubSpin { to { transform: rotate(360deg); } }
+
+.rg-hub-spark { font-size: 15px; line-height: 1; }
+.rg-hub-label { font-size: 13px; }
+
+/* the lock / ready line under the wheel */
+#review-app .rg-wheel-note {
+    margin: 14px 0 0;
+    color: var(--rf-ink-soft);
+    font-size: 13px;
+}
+
+#review-app .rg-wheel-section.is-ready .rg-wheel-note { color: var(--rf-primary); font-weight: 700; }
+
+#review-app .rg-wheel-terms {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--rf-border);
+    text-align: left;
+}
+
+#review-app .rg-wheel-terms summary {
+    cursor: pointer;
+    color: var(--rf-primary);
+    font-size: 12.5px;
+    font-weight: 700;
+    list-style: none;
+}
+
+#review-app .rg-wheel-terms summary::-webkit-details-marker { display: none; }
+
+#review-app .rg-wheel-result {
+    margin-top: 16px;
+    border-radius: 20px;
+    background: #FFFFFF;
+    border: 1px solid var(--rf-border);
+    box-shadow: 0 20px 46px -34px rgba(20, 22, 35, .6);
+}
+
+/* locked wheel stays visible but clearly not playable */
+#review-app .rg-wheel-section.is-locked .rg-wheel-disc { filter: saturate(.55) opacity(.55); }
+
+@media (max-width: 520px) {
+    #review-app .rg-wheel-section { padding: 18px 12px 14px; border-radius: 22px; }
+    #review-app .rg-wheel-title { font-size: 22px; }
+    #review-app .rg-wheel-hub { width: 74px; height: 74px; }
+    .rg-social { justify-content: flex-start; }
+    .bar-share span { display: inline; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .brand-box .logo-disc { animation: none; }
+    #review-app .rg-wheel-hub.is-busy .rg-hub-spark { animation: none; }
+}
+
+/* ---------- the centre button must win over the generic button rules ------ */
+
+#review-app .rg-wheel-stage .rg-wheel-hub {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 88px !important;
+    height: 88px !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 4px solid #FFFFFF !important;
+    border-radius: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    background: linear-gradient(135deg, var(--rf-primary), var(--rf-secondary)) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 14px 30px -12px rgba(75, 32, 220, .85) !important;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    z-index: 4;
+    cursor: pointer;
+}
+
+#review-app .rg-wheel-stage .rg-wheel-hub::before { content: none !important; }
+
+#review-app .rg-wheel-stage .rg-wheel-hub:disabled {
+    background: linear-gradient(135deg, #9A87D6, #B8A9E4) !important;
+    border-color: rgba(255, 255, 255, .9) !important;
+    color: #FFFFFF !important;
+    opacity: .85;
+    box-shadow: 0 10px 22px -14px rgba(75, 32, 220, .6) !important;
+    cursor: not-allowed;
+}
+
+@media (hover: hover) {
+    #review-app .rg-wheel-stage .rg-wheel-hub:hover:not(:disabled) {
+        transform: translate(-50%, -50%) scale(1.05) !important;
+    }
+}
+
+/* the locked wheel keeps its button visible, just not pressable */
+#review-app .rg-wheel-section.is-locked .rg-wheel-spin,
+#review-app .rg-wheel-section.is-locked .rg-wheel-hub { display: flex !important; }
+
+/* ---------- small corrections seen on a phone ---------------------------- */
+
+.rg-privacy { background: transparent !important; border: 0 !important; padding: 0 !important; }
+
+@media (max-width: 520px) {
+    .rg-social {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 7px;
+        overflow-x: visible;
+    }
+    .rg-social-btn {
+        padding: 8px 11px;
+        font-size: 11.5px;
+        gap: 6px;
+    }
+    .rg-social-icon { font-size: 13px; }
+    .rg-social-logo { width: 15px; height: 15px; }
+    #review-app .rg-wheel-stage .rg-wheel-hub { width: 76px !important; height: 76px !important; }
+    .bar-share { padding: 0 13px; font-size: 12px; }
+    .bar-share svg { width: 14px; height: 14px; }
+}
+
+@media (max-width: 380px) {
+    .rg-social-btn { padding: 7px 9px; font-size: 11px; }
+    .bar-share span { display: none; }
+    .bar-share { width: 38px; padding: 0; justify-content: center; }
+}
+
+/* ---------- link row: one line of pills, as in the reference --------------- */
+
+.rg-social {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: center;
+    gap: 8px;
+}
+
+.rg-social-btn {
+    flex: 0 0 auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    min-width: 0;
+    white-space: nowrap;
+}
+
+.rg-social-icon { margin: 0; }
+.rg-social-label { font-size: 12.5px; }
+
+/* the locked wheel keeps its colour: it is a preview, not a dead widget */
+#review-app .rg-wheel-section.is-locked .rg-wheel-disc { filter: none; opacity: .94; }
+
+@media (max-width: 520px) {
+    .rg-social { justify-content: flex-start; }
+    .rg-social-btn { padding: 8px 12px; }
+}
+
+/* ---------- link row: wrap and centre, never clipped on a phone ----------- */
+
+.rg-social {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    justify-content: center;
+}
+
+@media (max-width: 520px) {
+    .rg-social { gap: 6px; }
+    .rg-social-btn { padding: 7px 10px; font-size: 11.5px; gap: 5px; }
+    .rg-social-icon { font-size: 12.5px; }
+    .rg-social-label { font-size: 11.5px; }
+}
+
+/* the used wheel: a solid, muted button rather than a see-through one */
+#review-app .rg-wheel-stage .rg-wheel-hub:disabled {
+    opacity: 1;
+    background: linear-gradient(135deg, #7B4BF5, #9D7BF0) !important;
+}
